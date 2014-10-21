@@ -1,0 +1,23 @@
+# Check for include
+if [ ! -e /usr/include/openssl/rand.h ]
+then
+  echo "openssl/rand.h not found. Make sure libssl-dev (deb) or openssl-devel (rpm) is installed."
+  exit 1
+fi
+
+# Not linux. Probably OSX.
+if [ ! -e /sbin/ldconfig ]
+then
+  exit 0
+fi
+
+# looks like unix
+LIBFILE=$(/sbin/ldconfig -p | egrep -ohm1 " [-_a-zA-Z0-9/]*/libssl[0-9]*.so$")
+
+if [ -z "$LIBFILE" ]
+then
+  echo "libssl.so not found. Make sure libssl-dev (deb) or openssl-devel (rpm) is installed."
+  exit 1
+fi
+
+echo "PKG_LIBS= -L"$(dirname $LIBFILE)" -lssl -lcrypto" > src/Makevars
