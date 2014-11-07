@@ -4,8 +4,8 @@
 # can generate crypto secure random numbers in R.
 #
 #' @title Generate random bytes with OpenSSL
-#' @rdname rand_pseudo_bytes
-#' @useDynLib openssl R_RAND_pseudo_bytes
+#' @rdname rand_bytes
+#' @useDynLib openssl R_RAND_bytes
 #' @param n number of random bytes to generate
 #' @export
 #' @references OpenSSL manual: \url{https://www.openssl.org/docs/crypto/RAND_bytes.html}
@@ -17,12 +17,15 @@
 #' # numbers range from 0 to 255
 #' rnd <- rand_bytes(100000)
 #' hist(as.numeric(rnd), breaks=-1:255)
-rand_pseudo_bytes <- function(n = 1){
-  .Call(R_RAND_pseudo_bytes, n, TRUE)
+#'
+#' # Generate random doubles between 0 and 1
+#' rand_num(5)
+rand_bytes <- function(n = 1){
+  .Call(R_RAND_bytes, n, FALSE)
 }
 
-#' @rdname rand_pseudo_bytes
+#' @rdname rand_bytes
 #' @export
-rand_bytes <- function(n = 1){
-  .Call(R_RAND_pseudo_bytes, n, FALSE)
+rand_pseudo_bytes <- function(n = 1){
+  .Call(R_RAND_bytes, n, TRUE)
 }
