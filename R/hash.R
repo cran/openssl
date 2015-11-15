@@ -1,20 +1,14 @@
 #' Vectorized hashing functions
 #'
-#' Bindings to cryptographic hashing functions available in OpenSSL's libcrypto. Both
-#' binary and string inputs are supported and the output type will match the input type.
-#' Functions are fully vectorized for the case of character vectors: a vector with
-#' \code{n} strings will return \code{n} hashes.
+#' Bindings to hash functions in OpenSSL. Supported inputs are binary (raw vector),
+#' strings (character vector) or a connection object. Functions are vectorized for
+#' the case of character vectors: a vector with \code{n} strings returns \code{n}
+#' hashes. When passing a connection object, the contents will be stream-hashed which
+#' minimizes the amount of required memory.
 #'
-#' The family of hashing functions implement bindings to OpenSSL's crypto module, which
-#' allow for cryptographically hashing strings and raw (binary) vectors. When passing
-#' a connection object, they will stream-hash binary contents. To hash other types of
-#' objects, use a suitable mapping function such as \code{\link{serialize}} or
-#' \code{\link{as.character}}.
-#'
-#' The full range of OpenSSL-supported cryptographic functions are available. The "sha256"
-#' or "sha512" algorithm is generally recommended for sensitive information. While md5 and
-#' weaker members of the sha family are probably sufficient for collision-resistant identifiers,
-#' cryptographic weaknesses have been directly or indirectly identified in their output.
+#' The "sha256" algorithm is generally recommended for sensitive information. While md5
+#' and weaker members of the sha family are usually sufficient for collision-resistant
+#' identifiers, they are no longer considered secure for cryptographic purposes.
 #'
 #' In applications where hashes should be irreversible (such as names or passwords) it is
 #' often recommended to add a random, fixed \emph{salt} to each input before hashing. This
@@ -30,8 +24,8 @@
 #' Digest types: \url{https://www.openssl.org/docs/apps/dgst.html}
 #' @export
 #' @rdname hash
-#' @name crypto digest
-#' @useDynLib openssl R_digest_raw R_digest R_openssl_init R_openssl_cleanup
+#' @name hashing
+#' @useDynLib openssl R_digest_raw R_digest
 #' @examples # Support both strings and binary
 #' md5("foo")
 #' md5(charToRaw("foo"))
@@ -108,6 +102,7 @@ rawhash <- function(x, algo, salt = raw()){
   .Call(R_digest_raw, x, as.character(algo))
 }
 
+#' @useDynLib openssl R_digest
 stringhash <- function(x, algo, salt = ""){
   # Must be character vector
   stopifnot(is.character(x))
@@ -119,24 +114,23 @@ stringhash <- function(x, algo, salt = ""){
 
 connectionhash <- function(con, algo, salt){
   md <- md_init(algo);
-  open(con, "rb")
-  on.exit(close(con))
+  if(!isOpen(con)){
+    open(con, "rb")
+    on.exit(close(con))
+  }
   if(is.character(salt)){
     salt <- charToRaw(salt);
   }
   stopifnot(is.raw(salt))
   md_feed(md, salt)
-  cat("Hashing...")
   while(length(data <- readBin(con, raw(), 512*1024))){
     md_feed(md, data)
-    cat(".")
   }
-  cat("\n")
   md_final(md)
 }
 
 rawstringhash <- function(x, algo, salt){
-  if(is(x, "connection")){
+  hash <- if(inherits(x, "connection")){
     connectionhash(x, algo, salt)
   } else if(is.raw(x)){
     rawhash(x, algo, salt)
@@ -145,4 +139,50 @@ rawstringhash <- function(x, algo, salt){
   } else {
     stop("Argument 'x' must be raw or character vector.")
   }
+  structure(hash, class = c("hash", algo))
+}
+
+hash_type <- function(hash){
+  if(!is.raw(hash))
+    stop("hash must be raw vector or hex string")
+  if(inherits(hash, "md5") || length(hash) == 16){
+    "md5"
+  } else if(inherits(hash, "sha1") || length(hash) == 20){
+    "sha1"
+  } else if(inherits(hash, "sha256") || length(hash) == 32){
+    "sha256"
+  } else{
+    stop("Hash of length ", length(hash), " not supported")
+  }
+}
+
+is_hexraw <- function(str){
+  is.character(str) &&
+  (length(str) == 1) &&
+  grepl("^[a-f0-9 :]+$", tolower(str))
+}
+
+hex_to_raw <- function(str){
+  stopifnot(length(str) == 1)
+  str <- gsub("[ :]", "", str)
+  len <- nchar(str)/2
+  out <- raw(len)
+  for(i in 1:len){
+    out[i] <- as.raw(as.hexmode(substr(str, 2*i-1, 2*i)))
+  }
+  out
+}
+
+parse_hash <- function(x){
+  if(is.raw(x)) return(x)
+  if(is.character(x)) return(hex_to_raw(x[1]))
+  stop("Invalid hash: ", x)
+}
+
+#' @export
+print.hash <- function(x, ...){
+  if(is.raw(x))
+    cat(class(x)[2], paste(x, collapse = ":"), "\n")
+  else
+    print(unclass(x, ...))
 }
