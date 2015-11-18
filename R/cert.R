@@ -4,7 +4,8 @@
 #'
 #' @useDynLib openssl R_cert_verify_cert R_pubkey_verify_cert
 #' @export
-#' @rdname certs
+#' @rdname certificates
+#' @seealso \link{read_cert}
 #' @param cert certficate (or certificate-chain) to be verified. Must be cert or list or path.
 #' @param root trusted pubkey or certificate(s) e.g. CA bundle.
 #' @examples # Verify the r-project HTTPS cert
@@ -12,6 +13,10 @@
 #' print(chain)
 #' print(as.list(chain[[1]])$pubkey)
 #' cert_verify(chain, ca_bundle())
+#'
+#' # Another example
+#' ocpu <- download_ssl_cert("public.opencpu.org")
+#' as.list(ocpu[[1]])$subject
 cert_verify <- function(cert, root = ca_bundle()){
   if(is.raw(cert))
     cert <- list(cert)
@@ -37,12 +42,13 @@ cert_verify <- function(cert, root = ca_bundle()){
 
 #' @useDynLib openssl R_download_cert
 #' @export
-#' @rdname certs
+#' @rdname certificates
 #' @param host string: hostname of the server to connect to
 #' @param port integer: port to connect to
 download_ssl_cert <- function(host = "localhost", port = 443){
   stopifnot(is.character(host))
   stopifnot(is.numeric(port))
+  stopifnot(port < 2^16)
   .Call(R_download_cert, host, as.integer(port))
 }
 
@@ -57,7 +63,7 @@ pubkey_verify_cert <- function(cert, pubkey){
 }
 
 #' @export
-#' @rdname certs
+#' @rdname certificates
 ca_bundle <- function(){
   path <- system.file("cacert.pem", package = "openssl")
   read_cert_bundle(path)

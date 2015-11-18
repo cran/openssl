@@ -23,6 +23,7 @@
 #' @return An object of class \code{cert}, \code{key} or \code{pubkey} which holds the data
 #' in binary DER format and can be decomposed using \code{as.list}.
 #' @rdname read_key
+#' @seealso \link{download_ssl_cert}
 #' @examples \dontrun{# Read private key
 #' key <- read_key("~/.ssh/id_rsa")
 #' as.list(key)
@@ -63,6 +64,9 @@ read_key <- function(file, password = readline, der = is.raw(file)){
 #' @export
 #' @rdname read_key
 read_pubkey <- function(file, der = is.raw(file)){
+  if(inherits(file, "key") || inherits(file, "cert")){
+    return(as.list(file)$pubkey)
+  }
   buf <- read_input(file)
   key <- if(isTRUE(der)){
     parse_der_pubkey(buf)

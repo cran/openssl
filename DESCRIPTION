@@ -2,7 +2,7 @@ Package: openssl
 Type: Package
 Title: Toolkit for Encryption, Signatures and Certificates Based on
         OpenSSL
-Version: 0.5
+Version: 0.6
 Authors@R: c(
     person("Jeroen", "Ooms", , "jeroen.ooms@stat.ucla.edu", role = c("cre", "aut")),
     person("Oliver", "Keyes", role = "ctb"))
@@ -21,9 +21,9 @@ SystemRequirements: OpenSSL >= 1.0.1
 VignetteBuilder: knitr
 Suggests: testthat, digest, knitr
 NeedsCompilation: yes
-Packaged: 2015-11-15 09:46:33 UTC; jeroen
+Packaged: 2015-11-18 11:13:39 UTC; jeroen
 Author: Jeroen Ooms [cre, aut],
   Oliver Keyes [ctb]
 Maintainer: Jeroen Ooms <jeroen.ooms@stat.ucla.edu>
 Repository: CRAN
-Date/Publication: 2015-11-15 18:28:14
+Date/Publication: 2015-11-18 15:30:24

@@ -2,6 +2,7 @@
 #include "apple.h"
 #include "utils.h"
 #include <unistd.h>
+#include <fcntl.h>
 
 #ifdef _WIN32
 #include <winsock2.h>
@@ -15,25 +16,62 @@
 
 #include <openssl/ssl.h>
 
+void check_interrupt_fn(void *dummy) {
+  R_CheckUserInterrupt();
+}
+
+int pending_interrupt() {
+  return !(R_ToplevelExec(check_interrupt_fn, NULL));
+}
+
 SEXP R_download_cert(SEXP hostname, SEXP portnum) {
-  /* grab inputs */
-  int port = asInteger(portnum);
-  struct sockaddr_in dest_addr;
+  /* resolve hostname */
   struct hostent *host = gethostbyname(CHAR(STRING_ELT(hostname, 0)));
   if(!host)
     error("Failed to resolve hostname");
 
   /* create TCP socket */
+  int port = asInteger(portnum);
   int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+  struct sockaddr_in dest_addr;
   dest_addr.sin_family=AF_INET;
   dest_addr.sin_port=htons(port);
-  dest_addr.sin_addr.s_addr = *(long*)(host->h_addr);
-  memset(&(dest_addr.sin_zero), '\0', 8);
+  memcpy(&dest_addr.sin_addr, host->h_addr, host->h_length);
+  memset(&(dest_addr.sin_zero), '\0', sizeof(dest_addr.sin_zero));
+
+  /* Set to non-blocking mode */
+#ifdef _WIN32
+  u_long nonblocking = 1;
+  ioctlsocket(sockfd, FIONBIO, &nonblocking);
+#else
+  long arg = fcntl(sockfd, F_GETFL, NULL);
+  arg |= O_NONBLOCK;
+  fcntl(sockfd, F_SETFL, arg);
+#endif
 
   /* Connect */
-  char *tmp_ptr = inet_ntoa(dest_addr.sin_addr);
-  if (connect(sockfd, (struct sockaddr *) &dest_addr, sizeof(struct sockaddr)) < 0)
-    error("Failed to connect to %s on port %d", tmp_ptr, port);
+  struct timeval tv;
+  fd_set myset;
+  tv.tv_sec = 5; // 5 sec timeout
+  tv.tv_usec = 0;
+  FD_ZERO(&myset);
+  FD_SET(sockfd, &myset);
+  if (connect(sockfd, (struct sockaddr *) &dest_addr, sizeof(struct sockaddr)) < 0){
+    if(select(sockfd+1, NULL, &myset, NULL, &tv) < 1){
+      close(sockfd);
+      error("Failed to connect to %s on port %d", inet_ntoa(dest_addr.sin_addr), port);
+    }
+  }
+
+  /* Set back in blocking mode */
+#ifdef _WIN32
+  nonblocking = 0;
+  ioctlsocket(sockfd, FIONBIO, &nonblocking);
+#else
+  arg = fcntl(sockfd, F_GETFL, NULL);
+  arg &= (~O_NONBLOCK);
+  fcntl(sockfd, F_SETFL, arg);
+#endif
 
   /* Setup SSL */
   SSL_CTX *ctx = SSL_CTX_new(SSLv23_client_method());
@@ -44,9 +82,11 @@ SEXP R_download_cert(SEXP hostname, SEXP portnum) {
   /* Required for SNI (e.g. cloudflare) */
   bail(SSL_set_tlsext_host_name(ssl, CHAR(STRING_ELT(hostname, 0))));
 
-  /* Retrieve cert */
+  /* SSL handshake to get cert */
   SSL_set_fd(ssl, sockfd);
-  bail(SSL_connect(ssl));
+  int con = SSL_connect(ssl);
+  close(sockfd);
+  bail(con > 0);
 
   /* Convert certs to RAW. Not sure if I should free these */
   STACK_OF(X509) *chain = SSL_get_peer_cert_chain(ssl);
@@ -65,9 +105,8 @@ SEXP R_download_cert(SEXP hostname, SEXP portnum) {
     buf = NULL;
   }
 
-  /* Cleanup connection */
+  /* Cleanup SSL */
   SSL_free(ssl);
-  close(sockfd);
   SSL_CTX_free(ctx);
 
   /* Test for cert */

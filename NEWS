@@ -1,3 +1,9 @@
+0.6
+ - Added --force-bottle to autobrew installer
+ - Use nonblocking socket in ssl to support timeout and interrupt
+ - Fix UBSAN problem in ssl.c
+ - Fix ASAN problem in hash.c
+
 0.5
  - Major overhaul, add encryption, signature, cert stuff
  - Upgrade libssl and libcrypto on windows to 1.0.2d

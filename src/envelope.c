@@ -37,6 +37,7 @@ SEXP R_envelope_encrypt(SEXP data, SEXP pubkey) {
   int len2;
   bail(EVP_SealFinal(ctx, out + len1, &len2));
   EVP_PKEY_free(pkey[0]);
+  EVP_CIPHER_CTX_cleanup(ctx);
   EVP_CIPHER_CTX_free(ctx);
 
   /* Create output vector */
@@ -81,9 +82,10 @@ SEXP R_envelope_decrypt(SEXP data, SEXP iv, SEXP session, SEXP key) {
   bail(EVP_OpenUpdate(ctx, out, &len1, RAW(data), LENGTH(data)));
 
   /* Finalize and cleanup */
-  int len2;
+  int len2 = 0;
   bail(EVP_OpenFinal(ctx, out + len1, &len2));
   EVP_PKEY_free(pkey);
+  EVP_CIPHER_CTX_cleanup(ctx);
   EVP_CIPHER_CTX_free(ctx);
 
   /* Create RAW vector */
