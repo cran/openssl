@@ -1,6 +1,6 @@
-#' x509 certificates
+#' X509 certificates
 #'
-#' Read, download and verify certificates.
+#' Read, download, analyize and verify X.509 certificates.
 #'
 #' @useDynLib openssl R_cert_verify_cert R_pubkey_verify_cert
 #' @export
@@ -15,8 +15,12 @@
 #' cert_verify(chain, ca_bundle())
 #'
 #' # Another example
-#' ocpu <- download_ssl_cert("public.opencpu.org")
-#' as.list(ocpu[[1]])$subject
+#' chain <- download_ssl_cert("public.opencpu.org")
+#' ocpu <- chain[[1]]
+#' as.list(ocpu)$subject
+#'
+#' # Write PEM format
+#' write_pem(ocpu)
 cert_verify <- function(cert, root = ca_bundle()){
   if(is.raw(cert))
     cert <- list(cert)
@@ -46,6 +50,8 @@ cert_verify <- function(cert, root = ca_bundle()){
 #' @param host string: hostname of the server to connect to
 #' @param port integer: port to connect to
 download_ssl_cert <- function(host = "localhost", port = 443){
+  if(grepl("https?://", host))
+    stop("Argument 'host' must be a hostname, not url. Take out the https:// prefix.")
   stopifnot(is.character(host))
   stopifnot(is.numeric(port))
   stopifnot(port < 2^16)
@@ -73,5 +79,5 @@ ca_bundle <- function(){
 cert_info <- function(cert){
   stopifnot(is.raw(cert))
   out <- .Call(R_cert_info, cert)
-  structure(out, names = c("subject", "issuer", "algorithm", "signature", "validity", "self_signed"))
+  structure(out, names = c("subject", "issuer", "algorithm", "signature", "validity", "self_signed", "alt_names"))
 }

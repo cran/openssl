@@ -1,8 +1,9 @@
 #include <Rinternals.h>
-#include "apple.h"
-#include "utils.h"
+#include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <errno.h>
 
 #ifdef _WIN32
 #include <winsock2.h>
@@ -15,6 +16,7 @@
 #endif
 
 #include <openssl/ssl.h>
+#include "utils.h"
 
 void check_interrupt_fn(void *dummy) {
   R_CheckUserInterrupt();
@@ -43,10 +45,12 @@ SEXP R_download_cert(SEXP hostname, SEXP portnum) {
 #ifdef _WIN32
   u_long nonblocking = 1;
   ioctlsocket(sockfd, FIONBIO, &nonblocking);
+#define NONBLOCK_OK (WSAGetLastError() == WSAEWOULDBLOCK)
 #else
   long arg = fcntl(sockfd, F_GETFL, NULL);
   arg |= O_NONBLOCK;
   fcntl(sockfd, F_SETFL, arg);
+#define NONBLOCK_OK (errno == EINPROGRESS)
 #endif
 
   /* Connect */
@@ -56,11 +60,12 @@ SEXP R_download_cert(SEXP hostname, SEXP portnum) {
   tv.tv_usec = 0;
   FD_ZERO(&myset);
   FD_SET(sockfd, &myset);
-  if (connect(sockfd, (struct sockaddr *) &dest_addr, sizeof(struct sockaddr)) < 0){
-    if(select(sockfd+1, NULL, &myset, NULL, &tv) < 1){
-      close(sockfd);
-      error("Failed to connect to %s on port %d", inet_ntoa(dest_addr.sin_addr), port);
-    }
+
+  /* Try to connect */
+  connect(sockfd, (struct sockaddr *) &dest_addr, sizeof(struct sockaddr));
+  if(!NONBLOCK_OK || select(FD_SETSIZE, NULL, &myset, NULL, &tv) < 1){
+    close(sockfd);
+    error("Failed to connect to %s on port %d", inet_ntoa(dest_addr.sin_addr), port);
   }
 
   /* Set back in blocking mode */
@@ -72,6 +77,13 @@ SEXP R_download_cert(SEXP hostname, SEXP portnum) {
   arg &= (~O_NONBLOCK);
   fcntl(sockfd, F_SETFL, arg);
 #endif
+
+  int err = 0;
+  socklen_t errbuf = sizeof (err);
+  if(getsockopt (sockfd, SOL_SOCKET, SO_ERROR, (char*) &err, &errbuf) || err){
+    close(sockfd);
+    error("Failed to connect to %s on port %d", inet_ntoa(dest_addr.sin_addr), port);
+  }
 
   /* Setup SSL */
   SSL_CTX *ctx = SSL_CTX_new(SSLv23_client_method());

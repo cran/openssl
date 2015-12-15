@@ -1,8 +1,8 @@
-#include <R.h>
 #include <Rinternals.h>
-#include "apple.h"
-#include "utils.h"
+#include <stdlib.h>
+#include <string.h>
 #include <openssl/rand.h>
+#include "utils.h"
 
 SEXP R_RAND_bytes(SEXP n, SEXP pseudo) {
   int use_pseudo = asLogical(pseudo);

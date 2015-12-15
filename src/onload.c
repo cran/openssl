@@ -1,8 +1,9 @@
-#include "apple.h"
 #include <R_ext/Rdynload.h>
 #include <openssl/evp.h>
 #include <openssl/err.h>
 #include <openssl/ssl.h>
+#include <openssl/engine.h>
+#include <openssl/hmac.h>
 
 void R_init_openssl(DllInfo *info) {
 #ifdef _WIN32

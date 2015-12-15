@@ -1,0 +1,19 @@
+---
+title: "Introduction to OpenSSL"
+date: "`r Sys.Date()`"
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Introduction to OpenSSL}
+  \usepackage[utf8]{inputenc}  
+output:
+  html_document
+---
+
+```{r setup, include=FALSE}
+library(openssl)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Key Formats
+ 
+Private keys, public keys and certificates can be loaded with the `

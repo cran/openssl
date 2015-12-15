@@ -1,7 +1,6 @@
 #include <Rinternals.h>
-#include "apple.h"
-#include "utils.h"
 #include <openssl/pem.h>
+#include "utils.h"
 
 SEXP R_pem_write_key(SEXP input, SEXP password){
   BIO *mem = BIO_new_mem_buf(RAW(input), LENGTH(input));
@@ -20,10 +19,7 @@ SEXP R_pem_write_key(SEXP input, SEXP password){
   int len = BIO_read(out, buf, bufsize);
   BIO_free(out);
   bail(len);
-  SEXP res = PROTECT(allocVector(STRSXP, 1));
-  SET_STRING_ELT(res, 0, mkCharLen(buf, len));
-  UNPROTECT(1);
-  return res;
+  return ScalarString(mkCharLen(buf, len));
 }
 
 SEXP R_pem_write_pubkey(SEXP input){
@@ -37,8 +33,19 @@ SEXP R_pem_write_pubkey(SEXP input){
   int len = BIO_read(out, buf, bufsize);
   BIO_free(out);
   bail(len);
-  SEXP res = PROTECT(allocVector(STRSXP, 1));
-  SET_STRING_ELT(res, 0, mkCharLen(buf, len));
-  UNPROTECT(1);
-  return res;
+  return ScalarString(mkCharLen(buf, len));
+}
+
+SEXP R_pem_write_cert(SEXP input){
+  X509 *cert = X509_new();
+  const unsigned char *ptr = RAW(input);
+  bail(!!d2i_X509(&cert, &ptr, LENGTH(input)));
+  BIO *out = BIO_new(BIO_s_mem());
+  PEM_write_bio_X509(out, cert);
+  int bufsize = 100000;
+  char buf[bufsize];
+  int len = BIO_read(out, buf, bufsize);
+  BIO_free(out);
+  bail(len);
+  return ScalarString(mkCharLen(buf, len));
 }

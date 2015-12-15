@@ -9,7 +9,7 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="date" content="2015-11-18" />
+<meta name="date" content="2015-12-14" />
 
 <title>Cryptographic Hashing in R</title>
 
@@ -62,7 +62,7 @@ img {
 
 <div id="header">
 <h1 class="title">Cryptographic Hashing in R</h1>
-<h4 class="date"><em>2015-11-18</em></h4>
+<h4 class="date"><em>2015-12-14</em></h4>
 </div>
 
 
@@ -93,9 +93,9 @@ digest(&quot;foo&quot;, &quot;md5&quot;, serialize = FALSE)</code></pre>
 <pre><code>[1] &quot;acbd18db4cc2f85cedef654fccc4a4d8&quot;</code></pre>
 <pre class="r"><code># Other way around
 digest(cars, skip = 0)</code></pre>
-<pre><code>[1] &quot;f570e46a98dc6fcd1455b9eb80c185f9&quot;</code></pre>
+<pre><code>[1] &quot;f63ff144563ab93696168f308ddf1e09&quot;</code></pre>
 <pre class="r"><code>md5(serialize(cars, NULL))</code></pre>
-<pre><code>md5 f5:70:e4:6a:98:dc:6f:cd:14:55:b9:eb:80:c1:85:f9 </code></pre>
+<pre><code>md5 f6:3f:f1:44:56:3a:b9:36:96:16:8f:30:8d:df:1e:09 </code></pre>
 </div>
 
 

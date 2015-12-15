@@ -9,10 +9,11 @@
 #' private keys).
 #' @param path file to write to. If \code{NULL} it returns the output as a string.
 #' @rdname write_pem
-write_pem <- function(x, password = readline, path = NULL){
+write_pem <- function(x, path = NULL, password = readline){
   str <- pem_export(x, password)
   if(is.null(path)) return(str)
   writeLines(str, path)
+  invisible(path)
 }
 
 #' @export
@@ -21,6 +22,7 @@ write_der <- function(x, path = NULL){
   bin <- der_export(x)
   if(is.null(path)) return(bin)
   writeBin(unclass(bin), path)
+  invisible(path)
 }
 
 pem_export <- function(x, ...){
@@ -34,7 +36,7 @@ der_export <- function(x, ...){
 #' @useDynLib openssl R_pem_write_key
 pem_export.key <- function(x, password, ...){
   if(is.function(password))
-    password <- password("Enter new passphrase: ")
+    password <- password("Enter new passphrase (or hit ENTER for no password): ")
   stopifnot(is.character(password) || is.null(password))
   .Call(R_pem_write_key, x, password)
 }
@@ -44,10 +46,20 @@ pem_export.pubkey <- function(x, ...){
   .Call(R_pem_write_pubkey, x)
 }
 
+
+#' @useDynLib openssl R_pem_write_cert
+pem_export.cert <- function(x, ...){
+  .Call(R_pem_write_cert, x)
+}
+
 der_export.key <- function(x, ...){
   unclass(x)
 }
 
 der_export.pubkey <- function(x, ...){
+  unclass(x)
+}
+
+der_export.cert <- function(x, ...){
   unclass(x)
 }
