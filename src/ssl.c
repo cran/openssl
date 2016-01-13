@@ -8,6 +8,7 @@
 #ifdef _WIN32
 #include <winsock2.h>
 #include <ws2tcpip.h>
+const char *inet_ntop(int af, const void *src, char *dst, socklen_t size);
 #else
 #include <sys/socket.h>
 #include <resolv.h>
@@ -26,20 +27,28 @@ int pending_interrupt() {
   return !(R_ToplevelExec(check_interrupt_fn, NULL));
 }
 
-SEXP R_download_cert(SEXP hostname, SEXP portnum) {
-  /* resolve hostname */
-  struct hostent *host = gethostbyname(CHAR(STRING_ELT(hostname, 0)));
-  if(!host)
-    error("Failed to resolve hostname");
+SEXP R_download_cert(SEXP hostname, SEXP service) {
+  /* Because gethostbyname() is deprecated */
+  struct addrinfo *addr;
+  if(getaddrinfo(CHAR(STRING_ELT(hostname, 0)), CHAR(STRING_ELT(service, 0)), 0, &addr))
+    error("Failed to resolve hostname or unknown port");
+  int sockfd = socket(addr->ai_family, SOCK_STREAM, 0);
 
-  /* create TCP socket */
-  int port = asInteger(portnum);
-  int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-  struct sockaddr_in dest_addr;
-  dest_addr.sin_family=AF_INET;
-  dest_addr.sin_port=htons(port);
-  memcpy(&dest_addr.sin_addr, host->h_addr, host->h_length);
-  memset(&(dest_addr.sin_zero), '\0', sizeof(dest_addr.sin_zero));
+  /* For debugging */
+  struct sockaddr *sa = addr->ai_addr;
+
+  /* IPv4 vs v6 */
+  int port = 0;
+  char ip[INET6_ADDRSTRLEN];
+  if (sa->sa_family == AF_INET) {
+    struct sockaddr_in *sa_in = (struct sockaddr_in*) sa;
+    port = ntohs(sa_in->sin_port);
+    inet_ntop(AF_INET, &(sa_in->sin_addr), ip, INET_ADDRSTRLEN);
+  } else {
+    struct sockaddr_in6 *sa_in = (struct sockaddr_in6*) sa;
+    port = ntohs(sa_in->sin6_port);
+    inet_ntop(AF_INET6, &(sa_in->sin6_addr), ip, INET6_ADDRSTRLEN);
+  }
 
   /* Set to non-blocking mode */
 #ifdef _WIN32
@@ -62,11 +71,12 @@ SEXP R_download_cert(SEXP hostname, SEXP portnum) {
   FD_SET(sockfd, &myset);
 
   /* Try to connect */
-  connect(sockfd, (struct sockaddr *) &dest_addr, sizeof(struct sockaddr));
+  connect(sockfd, addr->ai_addr, (int)addr->ai_addrlen);
   if(!NONBLOCK_OK || select(FD_SETSIZE, NULL, &myset, NULL, &tv) < 1){
     close(sockfd);
-    error("Failed to connect to %s on port %d", inet_ntoa(dest_addr.sin_addr), port);
+    error("Failed to connect to %s on port %d", ip, port);
   }
+  freeaddrinfo(addr);
 
   /* Set back in blocking mode */
 #ifdef _WIN32
@@ -82,7 +92,7 @@ SEXP R_download_cert(SEXP hostname, SEXP portnum) {
   socklen_t errbuf = sizeof (err);
   if(getsockopt (sockfd, SOL_SOCKET, SO_ERROR, (char*) &err, &errbuf) || err){
     close(sockfd);
-    error("Failed to connect to %s on port %d", inet_ntoa(dest_addr.sin_addr), port);
+    error("Failed to connect to %s on port %d", ip, port);
   }
 
   /* Setup SSL */
