@@ -9,7 +9,7 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="date" content="2016-01-13" />
+<meta name="date" content="2016-01-18" />
 
 <title>Fun with bignum: how RSA encryption works</title>
 
@@ -62,7 +62,7 @@ img {
 
 <div id="header">
 <h1 class="title">Fun with bignum: how RSA encryption works</h1>
-<h4 class="date"><em>2016-01-13</em></h4>
+<h4 class="date"><em>2016-01-18</em></h4>
 </div>
 
 
@@ -95,15 +95,15 @@ stopifnot(div &lt; z)</code></pre>
 <p>OpenSSL has a key generator that does these things for us.</p>
 <pre class="r"><code>(key &lt;- rsa_keygen(256))</code></pre>
 <pre><code>## [256-bit rsa private key]
-## md5: 71:f0:64:34:94:6b:c1:b3:cd:2c:db:b1:ca:42:a3:16</code></pre>
+## md5: ec:e5:0d:16:2c:58:56:d7:0d:dc:9e:35:de:8b:3b:00</code></pre>
 <pre class="r"><code>(pubkey &lt;- as.list(key)$pubkey)</code></pre>
 <pre><code>## [256-bit rsa public key]
-## md5: 71:f0:64:34:94:6b:c1:b3:cd:2c:db:b1:ca:42:a3:16</code></pre>
+## md5: ec:e5:0d:16:2c:58:56:d7:0d:dc:9e:35:de:8b:3b:00</code></pre>
 <p>Usually we would use <code>rsa_encrypt</code> and <code>rsa_decrypt</code> to perform the encryption:</p>
 <pre class="r"><code>msg &lt;- charToRaw(&quot;hello world&quot;)
 ciphertext &lt;- rsa_encrypt(msg, pubkey)
 try(rawToChar(ciphertext))</code></pre>
-<pre><code>## [1] &quot;\x9f\n\032\xadkR\x9e\xfc\x9d\xe2\024 i\x964\xb0\xc7\xd2\xfd\026Ո\020\xd9%\004?\xd3\xe8\030\xaa\xba&quot;</code></pre>
+<pre><code>## [1] &quot;*IM\xec\032\034\005sl\xba\xa1\033^\035\xc1\xb1\x8a*\\\xbf_QA\xa1\xc8W\xd9\004!\a\x9a,&quot;</code></pre>
 <pre class="r"><code>rawToChar(rsa_decrypt(ciphertext, key))</code></pre>
 <pre><code>## [1] &quot;hello world&quot;</code></pre>
 <p>Let’s look at how this works under the hood.</p>
@@ -116,19 +116,19 @@ print(keydata)</code></pre>
 <pre><code>## $e
 ## [b] 65537
 ## $n
-## [b] 100548501689564403115078816179972504806835622409977237849555676615518080524161
+## [b] 90706973907130807165554162005142876717069546611474220884196610532242122041059
 ## $p
-## [b] 338136783266743717350285300784251394607
+## [b] 336102297104933393447953113075885901073
 ## $q
-## [b] 297360437152574952829355707722115212623
+## [b] 269879065654857696452538702435910524083
 ## $d
-## [b] 77733042199116072573181306751521841532431077755376986025333265484609541134249</code></pre>
+## [b] 9576293581693364889733574117118323450893562536519143991130732950868320535521</code></pre>
 <p>You can verify that the equations above hold for this key. The public key is simply a subset of the key which only contains <span class="math inline">\(n\)</span> and <span class="math inline">\(e\)</span>:</p>
 <pre class="r"><code>as.list(pubkey)$data</code></pre>
 <pre><code>## $e
 ## [b] 65537
 ## $n
-## [b] 100548501689564403115078816179972504806835622409977237849555676615518080524161</code></pre>
+## [b] 90706973907130807165554162005142876717069546611474220884196610532242122041059</code></pre>
 <p>In order to encrypt a message into ciphertext we have to treat the message data as an integer. The message cannot be larger than the key size. For example convert the text <code>hello world</code> into an integer:</p>
 <pre class="r"><code>m &lt;- bignum(charToRaw(&quot;hello world&quot;))
 print(m)</code></pre>
@@ -138,10 +138,10 @@ print(m)</code></pre>
 n &lt;- as.list(pubkey)$data$n
 c &lt;- (m ^ e) %% n
 print(c)</code></pre>
-<pre><code>## [b] 25790053836174256299325234106817522047702870349913123317476122283282772105652</code></pre>
+<pre><code>## [b] 29892471942183361427220663792671976895123407113668951219040155585865711053933</code></pre>
 <p>This is number represents out encrypted message! It is usually exchanged using base64 notation for human readability:</p>
 <pre class="r"><code>base64_encode(c)</code></pre>
-<pre><code>## [1] &quot;OQSnNygvXlE4Lf1Qp61vHU0+SZ5UaTmdTLp3KFypmbQ=&quot;</code></pre>
+<pre><code>## [1] &quot;QhaKH9854VJTbJugUWEpgIBlaH7Xx6Yf+CESB5NHbG0=&quot;</code></pre>
 <p>The ciphertext can be decrypted using <span class="math inline">\(d\)</span> from the corresponding private key via <span class="math inline">\(m = c^d \pmod{n}\)</span>. Note that <code>c^d</code> is too large to calculate directly so we need to use <code>bignum_mod_exp</code> instead.</p>
 <pre class="r"><code>d &lt;- as.list(key)$data$d
 out &lt;- bignum_mod_exp(c, d, n)
