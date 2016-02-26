@@ -1,5 +1,7 @@
 context("Test ECDSA 256 formats")
 
+if(openssl_config()$ec){
+
 # Read secret key and public key
 sk1 <- read_key("../keys/id_ecdsa")
 pk1 <- read_pubkey("../keys/id_ecdsa.pub")
@@ -22,6 +24,10 @@ test_that("reading public key formats", {
 test_that("pubkey ssh fingerprint", {
   fp <- paste(as.list(pk1)$fingerprint, collapse = "")
   expect_equal(fp, "100b0d5f53a36e63dc42085552cdc340")
+  pk5 <- read_pubkey(readLines("../keys/authorized_keys")[3])
+  expect_equal(pk1, pk5)
+  pk6 <- read_pubkey(write_ssh(pk1))
+  expect_equal(pk1, pk6)
 })
 
 test_that("signatures", {
@@ -65,3 +71,8 @@ test_that("signature path interface", {
 
 # Cleanup
 rm(sk1, pk1)
+
+} else {
+  cat("ec not supported")
+}
+

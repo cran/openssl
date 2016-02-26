@@ -1,3 +1,15 @@
+0.9.2
+ - Disable EC stuff for OPENSSL_NO_EC (needed on some Solaris / Gentoo)
+ - Added openssl_config() function to test if libssl is built with EC support
+ - Make configure script bourne compatible (remove bash shebang)
+ - Tweak for OpenBSD in ssl.c
+ - Added sha224, sha384 and sha2 functions
+ - Export the fingerprint function
+
+0.9.1
+ - Fix for getaddrinfo() in Solaris
+ - Use the configurable askpass() for password prompt
+
 0.9
  - Switched download_ssl_cert to getaddrinfo() api for ipv6 support
  - Fix for example for naming conflict with new digest package

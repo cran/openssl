@@ -9,9 +9,10 @@
 #' be stream-hashed which minimizes the amount of required memory. This is recommended
 #' for hashing files from disk or network.
 #'
-#' The "sha256" algorithm is generally recommended for sensitive information. While md5
-#' and weaker members of the sha family are usually sufficient for collision-resistant
-#' identifiers, they are no longer considered secure for cryptographic purposes.
+#' The sha2 family of algorithms (sha224, sha256, sha384 and sha512) is generally
+#' recommended for sensitive information. While sha1 and md5 are usually sufficient for
+#' collision-resistant identifiers, they are no longer considered secure for cryptographic
+#' purposes.
 #'
 #' In applications where hashes should be irreversible (such as names or passwords) it is
 #' often recommended to use a random \emph{key} for HMAC hashing. This prevents attacks where
@@ -21,6 +22,7 @@
 #'
 #' @param x character vector, raw vector or connection object.
 #' @param key string or raw vector used as the key for HMAC hashing
+#' @param size must be equal to 224 256 384 or 512
 #' @references OpenSSL manual: \url{https://www.openssl.org/docs/crypto/EVP_DigestInit.html}.
 #' Digest types: \url{https://www.openssl.org/docs/apps/dgst.html}
 #' @export
@@ -61,14 +63,32 @@ sha1 <- function(x, key = NULL){
 
 #' @rdname hash
 #' @export
+sha224 <- function(x, key = NULL){
+  rawstringhash(x, "sha224", key)
+}
+
+#' @rdname hash
+#' @export
 sha256 <- function(x, key = NULL){
   rawstringhash(x, "sha256", key)
 }
 
 #' @rdname hash
 #' @export
+sha384 <- function(x, key = NULL){
+  rawstringhash(x, "sha384", key)
+}
+
+#' @rdname hash
+#' @export
 sha512 <- function(x, key = NULL){
   rawstringhash(x, "sha512", key)
+}
+
+#' @rdname hash
+#' @export
+sha2 <- function(x, size = 256, key = NULL){
+  rawstringhash(x, paste0("sha", size), key)
 }
 
 #' @rdname hash

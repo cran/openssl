@@ -8,15 +8,24 @@
 \alias{md5}
 \alias{ripemd160}
 \alias{sha1}
+\alias{sha2}
+\alias{sha224}
 \alias{sha256}
+\alias{sha384}
 \alias{sha512}
 \title{Vectorized hash/hmac functions}
 \usage{
 sha1(x, key = NULL)
 
+sha224(x, key = NULL)
+
 sha256(x, key = NULL)
 
+sha384(x, key = NULL)
+
 sha512(x, key = NULL)
+
+sha2(x, size = 256, key = NULL)
 
 md4(x, key = NULL)
 
@@ -28,6 +37,8 @@ ripemd160(x, key = NULL)
 \item{x}{character vector, raw vector or connection object.}
 
 \item{key}{string or raw vector used as the key for HMAC hashing}
+
+\item{size}{must be equal to 224 256 384 or 512}
 }
 \description{
 All hash functions either calculate a hash-digest for \code{key == NULL} or HMAC
@@ -40,9 +51,10 @@ strings returns \code{n} hashes. When passing a connection object, the contents 
 be stream-hashed which minimizes the amount of required memory. This is recommended
 for hashing files from disk or network.
 
-The "sha256" algorithm is generally recommended for sensitive information. While md5
-and weaker members of the sha family are usually sufficient for collision-resistant
-identifiers, they are no longer considered secure for cryptographic purposes.
+The sha2 family of algorithms (sha224, sha256, sha384 and sha512) is generally
+recommended for sensitive information. While sha1 and md5 are usually sufficient for
+collision-resistant identifiers, they are no longer considered secure for cryptographic
+purposes.
 
 In applications where hashes should be irreversible (such as names or passwords) it is
 often recommended to use a random \emph{key} for HMAC hashing. This prevents attacks where
