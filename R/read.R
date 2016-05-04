@@ -233,8 +233,8 @@ print.pubkey <- function(x, ...){
 print.cert <- function(x, ...){
   subject <- cert_info(x)$subject
   cname <- regmatches(subject, regexpr("CN ?=[^,]*", subject))
-  cname <- ifelse(length(cname), substring(cname, 5), "")
-  cat(sprintf("[x509 certificate]%s\n", cname))
+  cname <- ifelse(length(cname), gsub("CN ?=", "", cname), "")
+  cat(sprintf("[x509 certificate] %s\n", cname))
   cat(sprintf("md5: %s\n", paste(md5(x), collapse = ":")))
   cat(sprintf("sha1: %s\n", paste(sha1(x), collapse = ":")))
 }
