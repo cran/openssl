@@ -24,7 +24,6 @@ stopifnot(div < z)
 ## ------------------------------------------------------------------------
 msg <- charToRaw("hello world")
 ciphertext <- rsa_encrypt(msg, pubkey)
-try(rawToChar(ciphertext))
 rawToChar(rsa_decrypt(ciphertext, key))
 
 ## ------------------------------------------------------------------------
