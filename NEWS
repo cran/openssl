@@ -1,3 +1,15 @@
+0.9.5
+ - Support for new API in OpenSSL 1.1.0
+ - Remove 'pseudo_rand_bytes()' (deprecated in libssl)
+ - Work around missing EVP_CIPH_GCM_MODE in OpenSSL 1.0.0
+ - Add read_pkcs12() and write_pkcs12() functions
+ - Add read_pem() for debugging PEM files
+ - Add base methods [, [[, $, names, .DollarNames for keys and certificates
+ - Update libssl on Windows to 1.0.2h
+ - Add #define _POSIX_C_SOURCE in ssl.c to ensure getaddrinfo() is available
+ - Add as.character.hash method for raw hashes
+ - Clear error buffer when raising an error
+
 0.9.4
  - Fix ec_keygen() for old versions of OpenSSL
  - Added aes_ctr() and aes_gcm() modes

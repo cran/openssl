@@ -2,17 +2,17 @@
 % Please edit documentation in R/hash.R
 \name{hashing}
 \alias{hashing}
+\alias{sha1}
 \alias{hmac}
 \alias{mac}
-\alias{md4}
-\alias{md5}
-\alias{ripemd160}
-\alias{sha1}
-\alias{sha2}
 \alias{sha224}
 \alias{sha256}
 \alias{sha384}
 \alias{sha512}
+\alias{sha2}
+\alias{md4}
+\alias{md5}
+\alias{ripemd160}
 \title{Vectorized hash/hmac functions}
 \usage{
 sha1(x, key = NULL)
@@ -65,8 +65,10 @@ dataset, while simultaneously rendering the results incomparable to other datase
 \examples{
 # Support both strings and binary
 md5(c("foo", "bar"))
-md5(charToRaw("foo"))
 md5("foo", key = "secret")
+
+hash <- md5(charToRaw("foo"))
+as.character(hash, sep = ":")
 
 # Compare to digest
 digest::digest("foo", "md5", serialize = FALSE)
@@ -92,7 +94,6 @@ sha256("john") # googleable
 sha256(c("john", "mary", "john"), key = "random_salt_value")
 }
 \references{
-OpenSSL manual: \url{https://www.openssl.org/docs/crypto/EVP_DigestInit.html}.
-Digest types: \url{https://www.openssl.org/docs/apps/dgst.html}
+Digest types: \url{https://www.openssl.org/docs/manmaster/man1/dgst.html}
 }
 

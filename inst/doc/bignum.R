@@ -19,7 +19,7 @@ stopifnot(div < z)
 
 ## ------------------------------------------------------------------------
 (key <- rsa_keygen(256))
-(pubkey <- as.list(key)$pubkey)
+(pubkey <- key$pubkey)
 
 ## ------------------------------------------------------------------------
 msg <- charToRaw("hello world")
@@ -27,19 +27,18 @@ ciphertext <- rsa_encrypt(msg, pubkey)
 rawToChar(rsa_decrypt(ciphertext, key))
 
 ## ------------------------------------------------------------------------
-keydata <- as.list(key)$data
-print(keydata)
+key$data
 
 ## ------------------------------------------------------------------------
-as.list(pubkey)$data
+pubkey$data
 
 ## ------------------------------------------------------------------------
 m <- bignum(charToRaw("hello world"))
 print(m)
 
 ## ------------------------------------------------------------------------
-e <- as.list(pubkey)$data$e
-n <- as.list(pubkey)$data$n
+e <- pubkey$data$e
+n <- pubkey$data$n
 c <- (m ^ e) %% n
 print(c)
 
@@ -47,7 +46,7 @@ print(c)
 base64_encode(c)
 
 ## ------------------------------------------------------------------------
-d <- as.list(key)$data$d
+d <- key$data$d
 out <- bignum_mod_exp(c, d, n)
 rawToChar(out)
 

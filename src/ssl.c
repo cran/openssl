@@ -1,3 +1,8 @@
+//getaddrinfo is an extension (not C99)
+#if !defined(_WIN32) && !defined(__sun) && !defined(_POSIX_C_SOURCE)
+#define _POSIX_C_SOURCE 200112L
+#endif
+
 #include <Rinternals.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,9 +15,9 @@
 #include <ws2tcpip.h>
 const char *inet_ntop(int af, const void *src, char *dst, socklen_t size);
 #else
+#include <sys/select.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <resolv.h>
 #include <netdb.h>
 #include <arpa/inet.h>
 #endif

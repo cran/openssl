@@ -23,8 +23,7 @@
 #' @param x character vector, raw vector or connection object.
 #' @param key string or raw vector used as the key for HMAC hashing
 #' @param size must be equal to 224 256 384 or 512
-#' @references OpenSSL manual: \url{https://www.openssl.org/docs/crypto/EVP_DigestInit.html}.
-#' Digest types: \url{https://www.openssl.org/docs/apps/dgst.html}
+#' @references Digest types: \url{https://www.openssl.org/docs/manmaster/man1/dgst.html}
 #' @export
 #' @aliases hmac mac
 #' @rdname hash
@@ -32,8 +31,10 @@
 #' @useDynLib openssl R_digest_raw R_digest
 #' @examples # Support both strings and binary
 #' md5(c("foo", "bar"))
-#' md5(charToRaw("foo"))
 #' md5("foo", key = "secret")
+#'
+#' hash <- md5(charToRaw("foo"))
+#' as.character(hash, sep = ":")
 #'
 #' # Compare to digest
 #' digest::digest("foo", "md5", serialize = FALSE)
@@ -221,9 +222,16 @@ parse_hash <- function(x){
 }
 
 #' @export
-print.hash <- function(x, ...){
+print.hash <- function(x, sep = ":", ...){
   if(is.raw(x))
-    cat(class(x)[-1], paste(x, collapse = ":"), "\n")
+    cat(class(x)[-1], as.character(x, sep = sep), "\n")
   else
     print(unclass(x, ...))
+}
+
+#' @export
+as.character.hash <- function(x, sep = "", ...){
+  if(is.raw(x))
+    structure(paste(unclass(x), collapse = sep), class = class(x))
+  else x
 }
