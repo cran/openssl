@@ -10,7 +10,7 @@
 #' conform to the X509 standard.
 #'
 #' The \code{password} argument is needed when reading keys that are protected with a
-#' passphrase. It can either be a string containing the passphrase, or a custom calback
+#' passphrase. It can either be a string containing the passphrase, or a custom callback
 #' function that will be called by OpenSSL to read the passphrase. The function should
 #' take one argument (a string with a message) and return a string. The default is to
 #' use \code{readline} which will prompt the user in an interactive R session.
@@ -55,7 +55,14 @@ read_key <- function(file, password = askpass, der = is.raw(file)){
       stop("Input is a certificate. Use read_cert() to read.")
     if(!any(grepl("PRIVATE", names)))
       stop("Invalid input: ", names)
-    parse_pem_key(buf, password)
+    if(any(grepl("RSA PRIVATE", names))){
+      # Try the modern format first, PKCS1 is very uncommon nowadays
+      tryCatch(parse_pem_key(buf, password), error = function(e){
+        parse_legacy_key(buf, password)
+      })
+    } else {
+      parse_pem_key(buf, password)
+    }
   }
   structure(key, class = c("key", pubkey_type(derive_pubkey(key))))
 }
@@ -115,9 +122,16 @@ read_cert_bundle <- function(file){
 }
 
 read_input <- function(x){
+  if(is.character(x) && grepl("^https?://", x)){
+    x <- url(x)
+  }
   if(is.raw(x)){
     x
   } else if(inherits(x, "connection")){
+    if(!isOpen(x)){
+      open(x, "rb")
+      on.exit(close(x))
+    }
     if(summary(x)$text == "text") {
       charToRaw(paste(readLines(x), collapse = "\n"))
     } else {
@@ -168,6 +182,15 @@ parse_pem_key <- function(buf, password = readline){
   .Call(R_parse_pem_key, buf, password)
 }
 
+#' @useDynLib openssl R_parse_pem_key_pkcs1
+parse_legacy_key <- function(buf, password){
+  tryCatch({
+    .Call(R_parse_pem_key_pkcs1, buf, password)
+  }, error = function(e){
+    parse_pem_key(buf, password)
+  })
+}
+
 #' @useDynLib openssl R_parse_der_key
 parse_der_key <- function(buf){
   .Call(R_parse_der_key, buf)
@@ -178,11 +201,11 @@ parse_pem_pubkey <- function(buf){
   .Call(R_parse_pem_pubkey, buf)
 }
 
-#' @useDynLib openssl R_parse_pem_pkcs1
+#' @useDynLib openssl R_parse_pem_pubkey_pkcs1
 parse_legacy_pubkey <- function(buf){
   # It is a common problem that clients add the wrong header
   tryCatch({
-    .Call(R_parse_pem_pkcs1, buf)
+    .Call(R_parse_pem_pubkey_pkcs1, buf)
   }, error = function(e){
     out <- gsub("RSA PUBLIC", "PUBLIC", rawToChar(buf), fixed = TRUE)
     parse_pem_pubkey(charToRaw(out))

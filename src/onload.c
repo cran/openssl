@@ -11,6 +11,8 @@
 
 
 void R_init_openssl(DllInfo *info) {
+  R_registerRoutines(info, NULL, NULL, NULL, NULL);
+  R_useDynamicSymbols(info, TRUE);
 #ifdef _WIN32
   WSADATA wsaData;
   WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -23,7 +25,7 @@ void R_init_openssl(DllInfo *info) {
   SSL_library_init();
 }
 
-void R_unload_curl(DllInfo *info) {
+void R_unload_openssl(DllInfo *info) {
   ERR_free_strings();
   EVP_cleanup();
 }

@@ -1,12 +1,12 @@
 #' Big number arithmetic
 #'
 #' Basic operations for working with large integers. The \code{bignum}
-#' funtion converts a positive integer, string or raw vector into a bignum type.
+#' function converts a positive integer, string or raw vector into a bignum type.
 #' All basic \link{Arithmetic} and \link{Comparison} operators such as
 #' \code{+}, \code{-}, \code{*}, \code{^}, \code{\%\%}, \code{\%/\%}, \code{==},
 #' \code{!=}, \code{<}, \code{<=}, \code{>} and \code{>=} are implemented for
 #' bignum objects. The
-#' \href{https://en.wikipedia.org/wiki/Modular_exponentiation}{Modular exponenent}
+#' \href{https://en.wikipedia.org/wiki/Modular_exponentiation}{Modular exponent}
 #' (\code{a^b \%\% m}) can be calculated using \code{\link{bignum_mod_exp}}
 #' when \code{b} is too large for calculating \code{a^b} directly.
 #'
@@ -66,6 +66,19 @@ print.bignum <- function(x, hex = FALSE, ...){
 #' @useDynLib openssl R_bignum_as_character
 as.character.bignum <- function(x, hex = FALSE, ...){
   .Call(R_bignum_as_character, x, hex)
+}
+
+#' @export
+as.double.bignum <- function(x, ...){
+  if(any(x > bignum("9007199254740992")))
+    warning("loss of precision for coersing bignum to double")
+  as.numeric(as.character(x))
+}
+
+#' @export
+#' @useDynLib openssl R_bignum_as_integer
+as.integer.bignum <- function(x, ...){
+  .Call(R_bignum_as_integer, x)
 }
 
 #' @export

@@ -3,6 +3,11 @@
 #define _POSIX_C_SOURCE 200112L
 #endif
 
+//see https://github.com/jeroen/openssl/issues/41
+#if defined(__FreeBSD__) && !defined(__BSD_VISIBLE)
+#define __BSD_VISIBLE 1
+#endif
+
 #include <Rinternals.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,6 +27,8 @@ const char *inet_ntop(int af, const void *src, char *dst, socklen_t size);
 #include <arpa/inet.h>
 #endif
 
+#include <openssl/crypto.h>
+#include <openssl/x509.h>
 #include <openssl/ssl.h>
 #include "utils.h"
 
@@ -135,7 +142,7 @@ SEXP R_download_cert(SEXP hostname, SEXP service) {
     SET_VECTOR_ELT(res, i, allocVector(RAWSXP, len));
     memcpy(RAW(VECTOR_ELT(res, i)), buf, len);
     setAttrib(VECTOR_ELT(res, i), R_ClassSymbol, mkString("cert"));
-    free(buf);
+    OPENSSL_free(buf);
     buf = NULL;
   }
 

@@ -1,6 +1,6 @@
 #' X509 certificates
 #'
-#' Read, download, analyize and verify X.509 certificates.
+#' Read, download, analyze and verify X.509 certificates.
 #'
 #' If https verification fails and you can't figure out why, have a look
 #' at \url{https://ssldecoder.org}.
@@ -9,7 +9,7 @@
 #' @export
 #' @rdname certificates
 #' @seealso \link{read_cert}
-#' @param cert certficate (or certificate-chain) to be verified. Must be cert or list or path.
+#' @param cert certificate (or certificate-chain) to be verified. Must be cert or list or path.
 #' @param root trusted pubkey or certificate(s) e.g. CA bundle.
 #' @examples # Verify the r-project HTTPS cert
 #' chain <- download_ssl_cert("www.r-project.org", 443)
@@ -30,6 +30,8 @@ cert_verify <- function(cert, root = ca_bundle()){
   if(!is.list(cert))
     cert <- read_cert_bundle(cert)
   stopifnot(inherits(cert[[1]], "cert"))
+  if(inherits(root, "cert"))
+    root <- list(root)
   if(!is.raw(root) && !is.list(root)){
     buf <- read_input(root)
     names <- pem_names(buf)

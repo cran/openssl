@@ -1,6 +1,7 @@
 #include <Rinternals.h>
 #include <stdlib.h>
 #include <string.h>
+#include <openssl/crypto.h>
 #include <openssl/bn.h>
 #include "utils.h"
 
@@ -46,6 +47,12 @@ SEXP R_bignum_as_character(SEXP x, SEXP hex){
   OPENSSL_free(str);
   BN_free(val);
   return res;
+}
+
+SEXP R_bignum_as_integer(SEXP x){
+  BIGNUM *val = r2bignum(x);
+  int res = BN_div_word(val, (BN_ULONG) INT_MAX + 1);
+  return ScalarInteger(BN_num_bits(val) ? NA_INTEGER : res);
 }
 
 SEXP R_bignum_add(SEXP x, SEXP y){
