@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2017-11-03" />
+<meta name="date" content="2017-11-10" />
 
 <title>Importing and exporting RSA/DSA/EC keys</title>
 
@@ -312,7 +312,7 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Importing and exporting RSA/DSA/EC keys</h1>
-<h4 class="date"><em>2017-11-03</em></h4>
+<h4 class="date"><em>2017-11-10</em></h4>
 
 </div>
 
@@ -339,13 +339,13 @@ pubkey &lt;- key$pubkey
 bin &lt;- write_der(pubkey)
 print(bin)</code></pre>
 <pre><code> [1] 30 59 30 13 06 07 2a 86 48 ce 3d 02 01 06 08 2a 86 48 ce 3d 03 01 07
-[24] 03 42 00 04 ff 1a 42 2b f3 4d 3f 8e 95 93 13 fb b9 81 de 0b 92 6e 60
-[47] 43 f0 9f 8a cf 71 f7 c7 07 56 f9 32 fa 83 ce 17 93 a8 2f 1e cf 90 95
-[70] 4b c5 6d 9b 7c 4a e2 e7 e6 36 0f 6e f8 9e 4d 7c 74 cd 3a 5a 27 5e</code></pre>
+[24] 03 42 00 04 80 a1 a2 91 98 0d ed 37 22 2a 70 aa c5 26 56 b8 9c 7a 31
+[47] 11 f9 d9 bb a8 df 18 29 7e 92 96 76 94 5c 8b e7 dc 51 97 b5 61 8a 41
+[70] 28 e0 be 42 f7 68 84 8b 71 30 d7 17 fc 23 3f 36 c2 56 7e d8 60 a5</code></pre>
 <p>To read a DER key use <code>read_key</code> or <code>read_pubkey</code> with <code>der = TRUE</code>.</p>
 <pre class="r"><code>read_pubkey(bin, der = TRUE)</code></pre>
 <pre><code>[256-bit ecdsa public key]
-md5: 1d3ecccdcbe7267c9cdaa2b1defed155</code></pre>
+md5: 7d141513060fc1ba53ed97aa96147c8f</code></pre>
 <p>Users typically don’t need to worry about the key’s underlying primes, but have a look at <code>key$data</code> if you are curious.</p>
 </section>
 <section id="the-pem-format" class="level3">
@@ -353,23 +353,23 @@ md5: 1d3ecccdcbe7267c9cdaa2b1defed155</code></pre>
 <p>In practice the user rarely encounters DER because it is mainly for internal use. When humans exchange keys and certificates they typically use the PEM format. PEM is simply <strong>base64 encoded DER data, plus a header</strong>. The header identifies the key (and possibly encryption) type.</p>
 <pre class="r"><code>cat(write_pem(pubkey))</code></pre>
 <pre><code>-----BEGIN PUBLIC KEY-----
-MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE/xpCK/NNP46VkxP7uYHeC5JuYEPw
-n4rPcffHB1b5MvqDzheTqC8ez5CVS8Vtm3xK4ufmNg9u+J5NfHTNOlonXg==
+MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEgKGikZgN7TciKnCqxSZWuJx6MRH5
+2buo3xgpfpKWdpRci+fcUZe1YYpBKOC+QvdohItxMNcX/CM/NsJWfthgpQ==
 -----END PUBLIC KEY-----</code></pre>
 <pre class="r"><code>cat(write_pem(key, password = NULL))</code></pre>
 <pre><code>-----BEGIN PRIVATE KEY-----
-MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgdv5AW3gJwExTq4kQ
-vJsnXO6UD0OvKfbEu/cyUuG4QXGhRANCAAT/GkIr800/jpWTE/u5gd4Lkm5gQ/Cf
-is9x98cHVvky+oPOF5OoLx7PkJVLxW2bfEri5+Y2D274nk18dM06Wide
+MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgSDlEDqfNewQI8IqC
+vtePqHariTqhD8kscUij4gKzqb2hRANCAASAoaKRmA3tNyIqcKrFJla4nHoxEfnZ
+u6jfGCl+kpZ2lFyL59xRl7VhikEo4L5C92iEi3Ew1xf8Iz82wlZ+2GCl
 -----END PRIVATE KEY-----</code></pre>
 <p>The PEM format allows for protecting private keys with a password. R will prompt you for the password when reading such a protected key.</p>
 <pre class="r"><code>cat(write_pem(key, password = &quot;supersecret&quot;))</code></pre>
 <pre><code>-----BEGIN ENCRYPTED PRIVATE KEY-----
-MIHjME4GCSqGSIb3DQEFDTBBMCkGCSqGSIb3DQEFDDAcBAhKDUan76F5fgICCAAw
-DAYIKoZIhvcNAgkFADAUBggqhkiG9w0DBwQIoxj+Jb0McwEEgZBGboGvFI3z+EwX
-8BpauN4BqCQi5iQP7umbkyealagDEepGSFkenUenCCQmFpfvLw/KFrLMioaS8wDS
-yp52rSIy5USSu1+VxyCvHls0iwtqq5Oa53cF9YOKUZotoHJazhQcejXEmIlSW8Uj
-EPhqTEsjOvTAz9O7y/nxqjou3SbuhF7ZkjoCSQP+0Y17AdBWsVc=
+MIHjME4GCSqGSIb3DQEFDTBBMCkGCSqGSIb3DQEFDDAcBAhBX0RSABCq2wICCAAw
+DAYIKoZIhvcNAgkFADAUBggqhkiG9w0DBwQIiD310h0RFa4EgZA35GVgClIqy9s8
+yRaol4KKRiOh79bhQZLqKgI0hVBVCwKuZ2sUy3ADXLXMYWWNVQThHmggKu7I2PJw
+rDwZgGS8W2F7kq+gzsZXaL9kAu3N/iIj1gFTAJxzq+0LYkI4DKyWmeMAUUfG5wJF
+4gO3YMlWEL7W/SrN7qi/BYDKX4SOHqAqxnbUcsu8hy2aZwDx/Dw=
 -----END ENCRYPTED PRIVATE KEY-----</code></pre>
 </section>
 <section id="the-openssh-format" class="level3">
@@ -377,11 +377,11 @@ EPhqTEsjOvTAz9O7y/nxqjou3SbuhF7ZkjoCSQP+0Y17AdBWsVc=
 <p>For better or worse, OpenSSH uses a custom format for <strong>public keys</strong>. The advantage of this format is that it fits on a single line which is nice for e.g. your <code>~/.ssh/known_hosts</code> file. There is no special format for private keys, OpenSSH uses PEM as well.</p>
 <pre class="r"><code>str &lt;- write_ssh(pubkey)
 print(str)</code></pre>
-<pre><code>[1] &quot;ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBP8aQivzTT+OlZMT+7mB3guSbmBD8J+Kz3H3xwdW+TL6g84Xk6gvHs+QlUvFbZt8SuLn5jYPbvieTXx0zTpaJ14=&quot;</code></pre>
+<pre><code>[1] &quot;ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBIChopGYDe03IipwqsUmVricejER+dm7qN8YKX6SlnaUXIvn3FGXtWGKQSjgvkL3aISLcTDXF/wjPzbCVn7YYKU=&quot;</code></pre>
 <p>The <code>read_pubkey</code> function will automatically detect if a file contains a <code>PEM</code> or <code>SSH</code> key.</p>
 <pre class="r"><code>read_pubkey(str)</code></pre>
 <pre><code>[256-bit ecdsa public key]
-md5: 1d3ecccdcbe7267c9cdaa2b1defed155</code></pre>
+md5: 7d141513060fc1ba53ed97aa96147c8f</code></pre>
 </section>
 <section id="the-json-web-key-jwk-format" class="level3">
 <h3>The JSON Web Key (JWK) format</h3>
@@ -392,8 +392,8 @@ jsonlite::prettify(json)</code></pre>
 <pre><code>{
     &quot;kty&quot;: &quot;EC&quot;,
     &quot;crv&quot;: &quot;P-256&quot;,
-    &quot;x&quot;: &quot;_xpCK_NNP46VkxP7uYHeC5JuYEPwn4rPcffHB1b5Mvo&quot;,
-    &quot;y&quot;: &quot;g84Xk6gvHs-QlUvFbZt8SuLn5jYPbvieTXx0zTpaJ14&quot;
+    &quot;x&quot;: &quot;gKGikZgN7TciKnCqxSZWuJx6MRH52buo3xgpfpKWdpQ&quot;,
+    &quot;y&quot;: &quot;XIvn3FGXtWGKQSjgvkL3aISLcTDXF_wjPzbCVn7YYKU&quot;
 }
  </code></pre>
 <p>Keys from <code>jose</code> and <code>openssl</code> are the same.</p>
@@ -402,7 +402,7 @@ identical(mykey, pubkey)</code></pre>
 <pre><code>[1] TRUE</code></pre>
 <pre class="r"><code>print(mykey)</code></pre>
 <pre><code>[256-bit ecdsa public key]
-md5: 1d3ecccdcbe7267c9cdaa2b1defed155</code></pre>
+md5: 7d141513060fc1ba53ed97aa96147c8f</code></pre>
 </section>
 
 
