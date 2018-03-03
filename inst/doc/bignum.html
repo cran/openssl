@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2018-02-02" />
+<meta name="date" content="2018-03-03" />
 
 <title>Fun with bignum: how RSA encryption works</title>
 
@@ -304,7 +304,7 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Fun with bignum: how RSA encryption works</h1>
-<h4 class="date"><em>2018-02-02</em></h4>
+<h4 class="date"><em>2018-03-03</em></h4>
 
 </div>
 
@@ -338,10 +338,10 @@ stopifnot(div &lt; z)</code></pre>
 <p>OpenSSL has a key generator that does these things for us.</p>
 <pre class="r"><code>(key &lt;- rsa_keygen(512))</code></pre>
 <pre><code>## [512-bit rsa private key]
-## md5: e18da44d9f64ae9ffba305b0f35b887a</code></pre>
+## md5: e9d2ac2f1b44c64bb6ced819577e369b</code></pre>
 <pre class="r"><code>(pubkey &lt;- key$pubkey)</code></pre>
 <pre><code>## [512-bit rsa public key]
-## md5: e18da44d9f64ae9ffba305b0f35b887a</code></pre>
+## md5: e9d2ac2f1b44c64bb6ced819577e369b</code></pre>
 <p>Usually we would use <code>rsa_encrypt</code> and <code>rsa_decrypt</code> to perform the encryption:</p>
 <pre class="r"><code>msg &lt;- charToRaw(&quot;hello world&quot;)
 ciphertext &lt;- rsa_encrypt(msg, pubkey)
@@ -356,25 +356,25 @@ rawToChar(rsa_decrypt(ciphertext, key))</code></pre>
 <pre><code>## $e
 ## [b] 65537
 ## $n
-## [b] 8880398618250573624877365622920704016709109299493784031833396810438100462870712822785520330619957455802578413348751424480383542338536300689823253419159209
+## [b] 10018552830647930976581532958364604868302096115209798018846074693783366748950731893436452520808776316212532476845078332243469359198295797113656813896240179
 ## $p
-## [b] 94715575449196973994056879112470312873631270053778845027827218966691408596143
+## [b] 107071929427310789952845069837493782634330677470894190927206317809268847550207
 ## $q
-## [b] 93758588026673539144329738549376388654149039618886398179406954787349079015463
+## [b] 93568434642334026268590208649615895570873518444584900248739062542459827144397
 ## $d
-## [b] 4307881545866033487680260126095106918217434469833931701787499449127181438204063507505562315573126506363227909224537804529887547562669967845322068717209537
+## [b] 863249276510503474750994348473151405943237205892697703776855574649353373381809511971859348165615719557418773950460542198827177944747330557364142640738329
 ## $dp
-## [b] 36116121129673808384751841082451639817386292302728738533124833330448728211813
+## [b] 24024485744367382795315421089771366916975641427125121344958861458188479839263
 ## $dq
-## [b] 50070293457826070715968025992792227695905553162662389945848360629910286043947
+## [b] 92333457515434428595179302894364392608137879134659729143635696671284342296449
 ## $qi
-## [b] 71928367380328607333292648963634898864058777788949613071497089481160076165026</code></pre>
+## [b] 57567964806227313104302862347803919907274346596277394585475535107107824433462</code></pre>
 <p>You can verify that the equations above hold for this key. The public key is simply a subset of the key which only contains <span class="math inline">\(n\)</span> and <span class="math inline">\(e\)</span>:</p>
 <pre class="r"><code>pubkey$data</code></pre>
 <pre><code>## $e
 ## [b] 65537
 ## $n
-## [b] 8880398618250573624877365622920704016709109299493784031833396810438100462870712822785520330619957455802578413348751424480383542338536300689823253419159209</code></pre>
+## [b] 10018552830647930976581532958364604868302096115209798018846074693783366748950731893436452520808776316212532476845078332243469359198295797113656813896240179</code></pre>
 <p>In order to encrypt a message into ciphertext we have to treat the message data as an integer. The message cannot be larger than the key size. For example convert the text <code>hello world</code> into an integer:</p>
 <pre class="r"><code>m &lt;- bignum(charToRaw(&quot;hello world&quot;))
 print(m)</code></pre>
@@ -384,10 +384,10 @@ print(m)</code></pre>
 n &lt;- pubkey$data$n
 c &lt;- (m ^ e) %% n
 print(c)</code></pre>
-<pre><code>## [b] 2238241569544886559926144682475496212867592160651494000406005421713581168317505562746012108037411131811771113102387517446826974717365105943944381875603367</code></pre>
+<pre><code>## [b] 4663097187745886689962460064230860476867164510342572167075487239066969269751260683679111276616047199586694097100928603405699260574680630266256818722256924</code></pre>
 <p>This is number represents out encrypted message! It is usually exchanged using base64 notation for human readability:</p>
 <pre class="r"><code>base64_encode(c)</code></pre>
-<pre><code>## [1] &quot;KrxMAX3TSx9M25SMo0BY0xP9NqX+4XD/8+sq53YGty/13p6fKEpY49tCqY3I9WbkZwK0g8Nhoa2u79iNMI/Hpw==&quot;</code></pre>
+<pre><code>## [1] &quot;WQi+iCAGzEbM/4VTUQggZ9m3wOJ5AMKRPQeOOe+jMVkBJPe1WKu6ouJKjK8jCfPsF82fiDESmu0fwG2pIg84HA==&quot;</code></pre>
 <p>The ciphertext can be decrypted using <span class="math inline">\(d\)</span> from the corresponding private key via <span class="math inline">\(m = c^d \pmod{n}\)</span>. Note that <code>c^d</code> is too large to calculate directly so we need to use <code>bignum_mod_exp</code> instead.</p>
 <pre class="r"><code>d &lt;- key$data$d
 out &lt;- bignum_mod_exp(c, d, n)

@@ -2,9 +2,9 @@ Package: openssl
 Type: Package
 Title: Toolkit for Encryption, Signatures and Certificates Based on
         OpenSSL
-Version: 1.0
-Authors@R: c(
-    person("Jeroen", "Ooms", , "jeroen@berkeley.edu", role = c("cre", "aut")),
+Version: 1.0.1
+Authors@R: c(person("Jeroen", "Ooms", role = c("aut", "cre"), email = "jeroen@berkeley.edu",
+    comment = c(ORCID = "0000-0002-4035-0289")),
     person("Oliver", "Keyes", role = "ctb"))
 Description: Bindings to OpenSSL libssl and libcrypto, plus custom SSH pubkey parsers.
     Supports RSA, DSA and EC curves P-256, P-384 and P-521. Cryptographic signatures
@@ -23,9 +23,9 @@ VignetteBuilder: knitr
 Suggests: testthat, digest, knitr, rmarkdown, jsonlite, jose
 RoxygenNote: 6.0.1.9000
 NeedsCompilation: yes
-Packaged: 2018-02-02 08:16:13 UTC; jeroen
-Author: Jeroen Ooms [cre, aut],
+Packaged: 2018-03-03 10:51:56 UTC; jeroen
+Author: Jeroen Ooms [aut, cre] (<https://orcid.org/0000-0002-4035-0289>),
   Oliver Keyes [ctb]
 Maintainer: Jeroen Ooms <jeroen@berkeley.edu>
 Repository: CRAN
-Date/Publication: 2018-02-02 18:26:41 UTC
+Date/Publication: 2018-03-03 14:03:23 UTC
