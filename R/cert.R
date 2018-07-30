@@ -12,7 +12,6 @@
 #' @param cert certificate (or certificate-chain) to be verified. Must be cert or list or path.
 #' @param root trusted pubkey or certificate(s) e.g. CA bundle.
 #' @examples # Verify the r-project HTTPS cert
-#' options(ipv4_only = TRUE)
 #' chain <- download_ssl_cert("www.r-project.org", 443)
 #' print(chain)
 #' print(as.list(chain[[1]])$pubkey)
@@ -55,11 +54,11 @@ cert_verify <- function(cert, root = ca_bundle()){
 #' @rdname certificates
 #' @param host string: hostname of the server to connect to
 #' @param port string or integer: port or protocol to use, e.g: \code{443} or \code{"https"}
-download_ssl_cert <- function(host = "localhost", port = 443){
+#' @param ipv4_only do not use IPv6 connections
+download_ssl_cert <- function(host = "localhost", port = 443, ipv4_only = FALSE){
   if(grepl("https?://", host))
     stop("Argument 'host' must be a hostname, not url. Take out the https:// prefix.")
   stopifnot(is.character(host))
-  ipv4_only <- isTRUE(getOption("ipv4_only"))
   .Call(R_download_cert, host, as.character(port), ipv4_only)
 }
 

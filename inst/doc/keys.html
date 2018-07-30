@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2018-03-03" />
+<meta name="date" content="2018-07-30" />
 
 <title>Importing and exporting RSA/DSA/EC keys</title>
 
@@ -276,6 +276,9 @@ img {
 .tabbed-pane {
   padding-top: 12px;
 }
+.html-widget {
+  margin-bottom: 20px;
+}
 button.code-folding-btn:focus {
   outline: none;
 }
@@ -304,7 +307,7 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Importing and exporting RSA/DSA/EC keys</h1>
-<h4 class="date"><em>2018-03-03</em></h4>
+<h4 class="date"><em>2018-07-30</em></h4>
 
 </div>
 
@@ -331,13 +334,13 @@ pubkey &lt;- key$pubkey
 bin &lt;- write_der(pubkey)
 print(bin)</code></pre>
 <pre><code> [1] 30 59 30 13 06 07 2a 86 48 ce 3d 02 01 06 08 2a 86 48 ce 3d 03 01 07
-[24] 03 42 00 04 c5 85 3d ef 7a 91 8f c7 ce 78 9c 51 81 49 c1 3b 11 e9 59
-[47] e1 9d a6 69 00 46 1e 16 53 c6 b7 ff 10 52 b3 2c 55 43 24 33 0a 77 a6
-[70] 92 83 1a 85 c7 51 79 4f 60 07 bf 77 f4 9f 2e 0c 93 03 eb 94 af 36</code></pre>
+[24] 03 42 00 04 21 bf 07 c0 a7 69 aa ce cb 63 54 09 71 f3 37 d1 65 fa 44
+[47] 24 8c 14 ad fe 5f 1d 68 11 91 32 28 5d 0c c3 6c 92 a1 97 15 6e a7 06
+[70] ee 47 75 e2 86 be 2b 41 6d 3c 26 e5 56 1c 32 d5 87 05 ce 20 0b 34</code></pre>
 <p>To read a DER key use <code>read_key</code> or <code>read_pubkey</code> with <code>der = TRUE</code>.</p>
 <pre class="r"><code>read_pubkey(bin, der = TRUE)</code></pre>
 <pre><code>[256-bit ecdsa public key]
-md5: c9388dc7b215f83227e86da0c358de54</code></pre>
+md5: 17b0d4ce92f3bd94ef779d81d2020910</code></pre>
 <p>Users typically don’t need to worry about the key’s underlying primes, but have a look at <code>key$data</code> if you are curious.</p>
 </div>
 <div id="the-pem-format" class="section level3">
@@ -345,23 +348,23 @@ md5: c9388dc7b215f83227e86da0c358de54</code></pre>
 <p>In practice the user rarely encounters DER because it is mainly for internal use. When humans exchange keys and certificates they typically use the PEM format. PEM is simply <strong>base64 encoded DER data, plus a header</strong>. The header identifies the key (and possibly encryption) type.</p>
 <pre class="r"><code>cat(write_pem(pubkey))</code></pre>
 <pre><code>-----BEGIN PUBLIC KEY-----
-MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAExYU973qRj8fOeJxRgUnBOxHpWeGd
-pmkARh4WU8a3/xBSsyxVQyQzCnemkoMahcdReU9gB7939J8uDJMD65SvNg==
+MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEIb8HwKdpqs7LY1QJcfM30WX6RCSM
+FK3+Xx1oEZEyKF0Mw2ySoZcVbqcG7kd14oa+K0FtPCblVhwy1YcFziALNA==
 -----END PUBLIC KEY-----</code></pre>
 <pre class="r"><code>cat(write_pem(key, password = NULL))</code></pre>
 <pre><code>-----BEGIN PRIVATE KEY-----
-MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgqRftJTrdiq+tebxc
-SJ6ESMQKm7QISy3n1BrzAAz+Uh2hRANCAATFhT3vepGPx854nFGBScE7EelZ4Z2m
-aQBGHhZTxrf/EFKzLFVDJDMKd6aSgxqFx1F5T2AHv3f0ny4MkwPrlK82
+MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgI8OYUCZgVcfcsUcT
+RWJhJmOzEapLn55ptRYGir0+28ChRANCAAQhvwfAp2mqzstjVAlx8zfRZfpEJIwU
+rf5fHWgRkTIoXQzDbJKhlxVupwbuR3Xihr4rQW08JuVWHDLVhwXOIAs0
 -----END PRIVATE KEY-----</code></pre>
 <p>The PEM format allows for protecting private keys with a password. R will prompt you for the password when reading such a protected key.</p>
 <pre class="r"><code>cat(write_pem(key, password = &quot;supersecret&quot;))</code></pre>
 <pre><code>-----BEGIN ENCRYPTED PRIVATE KEY-----
-MIHVMEAGCSqGSIb3DQEFDTAzMBsGCSqGSIb3DQEFDDAOBAg66/ysjUMy2QICCAAw
-FAYIKoZIhvcNAwcECNDj36Rt5Ox2BIGQ5K3iAmXJz3nPbzZxyQNUz2aDjxckk8+e
-JqbbfukrSk7+cJu+1L0BrHCRKc21k7coKdstVBaibqs0UsnR+dToU5KJ8U77iA/B
-kTDVI0Lonv7iXhl1Ye5n0/6BdRfdHkRi9iG36F4bvZxp+NKJf4FVG4CSYHLWd2dg
-ZGDtHQhm1Q+eG96Lq9PucwRDgpcmGM9j
+MIHjME4GCSqGSIb3DQEFDTBBMCkGCSqGSIb3DQEFDDAcBAg0vbrAeY+grgICCAAw
+DAYIKoZIhvcNAgkFADAUBggqhkiG9w0DBwQIvj4ORAQjj7sEgZBPpkMO3FzYuhoy
+i2e+2/0kOn+BOffZuReq6hCykD+PuRma3BHITkuAxJ3lHYu+PZYpOPAsU5sTKRaG
+znHkPVholUKZnq81opWzuaW2GntSa94/OFCFv3OUCicpNnE2yzK2xUMnDXochcZw
+iWFrt6nkYnpr75micdbxVeRfg7Wk4Cx2usyGIh9g8XeBZZR6pP8=
 -----END ENCRYPTED PRIVATE KEY-----</code></pre>
 </div>
 <div id="the-openssh-format" class="section level3">
@@ -369,11 +372,11 @@ ZGDtHQhm1Q+eG96Lq9PucwRDgpcmGM9j
 <p>For better or worse, OpenSSH uses a custom format for <strong>public keys</strong>. The advantage of this format is that it fits on a single line which is nice for e.g. your <code>~/.ssh/known_hosts</code> file. There is no special format for private keys, OpenSSH uses PEM as well.</p>
 <pre class="r"><code>str &lt;- write_ssh(pubkey)
 print(str)</code></pre>
-<pre><code>[1] &quot;ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBMWFPe96kY/HznicUYFJwTsR6VnhnaZpAEYeFlPGt/8QUrMsVUMkMwp3ppKDGoXHUXlPYAe/d/SfLgyTA+uUrzY=&quot;</code></pre>
+<pre><code>[1] &quot;ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBCG/B8CnaarOy2NUCXHzN9Fl+kQkjBSt/l8daBGRMihdDMNskqGXFW6nBu5HdeKGvitBbTwm5VYcMtWHBc4gCzQ=&quot;</code></pre>
 <p>The <code>read_pubkey</code> function will automatically detect if a file contains a <code>PEM</code> or <code>SSH</code> key.</p>
 <pre class="r"><code>read_pubkey(str)</code></pre>
 <pre><code>[256-bit ecdsa public key]
-md5: c9388dc7b215f83227e86da0c358de54</code></pre>
+md5: 17b0d4ce92f3bd94ef779d81d2020910</code></pre>
 </div>
 <div id="the-json-web-key-jwk-format" class="section level3">
 <h3>The JSON Web Key (JWK) format</h3>
@@ -384,8 +387,8 @@ jsonlite::prettify(json)</code></pre>
 <pre><code>{
     &quot;kty&quot;: &quot;EC&quot;,
     &quot;crv&quot;: &quot;P-256&quot;,
-    &quot;x&quot;: &quot;xYU973qRj8fOeJxRgUnBOxHpWeGdpmkARh4WU8a3_xA&quot;,
-    &quot;y&quot;: &quot;UrMsVUMkMwp3ppKDGoXHUXlPYAe_d_SfLgyTA-uUrzY&quot;
+    &quot;x&quot;: &quot;Ib8HwKdpqs7LY1QJcfM30WX6RCSMFK3-Xx1oEZEyKF0&quot;,
+    &quot;y&quot;: &quot;DMNskqGXFW6nBu5HdeKGvitBbTwm5VYcMtWHBc4gCzQ&quot;
 }
  </code></pre>
 <p>Keys from <code>jose</code> and <code>openssl</code> are the same.</p>
@@ -394,7 +397,7 @@ identical(mykey, pubkey)</code></pre>
 <pre><code>[1] TRUE</code></pre>
 <pre class="r"><code>print(mykey)</code></pre>
 <pre><code>[256-bit ecdsa public key]
-md5: c9388dc7b215f83227e86da0c358de54</code></pre>
+md5: 17b0d4ce92f3bd94ef779d81d2020910</code></pre>
 </div>
 
 
