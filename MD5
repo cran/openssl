@@ -1,4 +1,4 @@
-60284acd444fb16979908192b670d1f1 *DESCRIPTION
+33df8544cd268483eb1c3a35126f34e2 *DESCRIPTION
 98c71b5eae0ac8dabb055bd8883b8398 *LICENSE
 552d38ed41970d5885711b39779c7954 *NAMESPACE
 f8c6265ef003fcf80eb8c8b728179063 *NEWS
@@ -35,16 +35,16 @@ d41d8cd98f00b204e9800998ecf8427e *configure.win
 8d35a5cef6ce28da07867a0712558067 *inst/cacert.pem
 538ca1f45e2c482e27a792761d92f392 *inst/doc/bignum.R
 9b17e80d7fb868cac8a52e63d3204a8b *inst/doc/bignum.Rmd
-df3bea710f5d37632bccc6d16f79a662 *inst/doc/bignum.html
+17f2b74c2197f7af0774e22776e28cb0 *inst/doc/bignum.html
 290c8f4ed75f1b80406a241d34906256 *inst/doc/crypto_hashing.R
 0b17ff80c3353c70f01e43324820eb32 *inst/doc/crypto_hashing.Rmd
-beb3655fa49b5c21411796dc609f802e *inst/doc/crypto_hashing.html
+0592f7606301fae1d75c4e36caae5bd8 *inst/doc/crypto_hashing.html
 65488f0ce9e60ae12fb2d12b87a0d81e *inst/doc/keys.R
 84e4760fec6195d3851b4dc45f7857e6 *inst/doc/keys.Rmd
-2e925bf782e1635d4f091487cda7f6b6 *inst/doc/keys.html
+29847bc374b734a0180d333b81e0d5b7 *inst/doc/keys.html
 91da732f2fc44700d7816c659df5a2d3 *inst/doc/secure_rng.R
 35ea87007fe89af619623a6d75c0d02d *inst/doc/secure_rng.Rmd
-4ba2bdfccd00a50dc9e5b77011062510 *inst/doc/secure_rng.html
+540b2091e51a55cfa396f08cd6ede7e5 *inst/doc/secure_rng.html
 f7ab82c62438871433ceacf6a9dc54ba *inst/mac-askpass
 dc59ce8c36aa296a2602d5c21eb2f331 *man/aes_cbc.Rd
 f4ea38f39d1aad5b038633a28303454d *man/base64_encode.Rd
@@ -88,7 +88,7 @@ fe153884900155b8ff626eeeff68687f *src/pkcs12.c
 e32daf32ca605f541ee1d0a1f7d73f4f *src/pkcs7.c
 0a38050f3a4e6bd4a8d84d71235a40fe *src/rand.c
 751b3728424ef0482e12d1b68477a62a *src/rsa.c
-89eea36b72f1c401eb39f2a2222c5a93 *src/signing.c
+a438fe637d6f59801f415add501476ca *src/signing.c
 68b356355089b5b7891e964b48b14348 *src/ssl.c
 c918c13f9e196926334645f78a18b107 *src/stream.c
 6527d02975f16baeece916390f03e30b *src/tests/main.c
