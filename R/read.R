@@ -42,7 +42,7 @@ read_key <- function(file, password = askpass, der = is.raw(file)){
   key <- if(isTRUE(der)){
     parse_der_key(buf)
   } else if(length(grepRaw("BEGIN OPENSSH PRIVATE KEY", buf, fixed = TRUE))){
-    stop("OpenSSL does not support them fancy OPENSSH bcrypt/ed25519 keys")
+    parse_openssh_key_private(buf, password = password)
   } else if(is_pubkey_str(buf)){
     stop("Input is a public key. Use read_pubkey() to read")
   } else {
@@ -79,6 +79,8 @@ read_pubkey <- function(file, der = is.raw(file)){
     parse_der_pubkey(buf)
   } else if(length(grepRaw("BEGIN SSH2 PUBLIC KEY", buf, fixed = TRUE))){
     parse_ssh_pem(buf)
+  } else if(length(grepRaw("BEGIN OPENSSH PRIVATE KEY", buf, fixed = TRUE))){
+    parse_openssh_key_pubkey(buf)
   } else if(is_pubkey_str(buf)){
     parse_openssh(buf)
   } else {

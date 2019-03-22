@@ -6,14 +6,18 @@ pk1 <- read_pubkey("../keys/id_rsa.pub")
 
 test_that("reading protected keys", {
   sk2 <- read_key("../keys/id_rsa.pw", password = "test")
+  sk3 <- read_key("../keys/id_rsa.openssh")
+  sk4 <- read_key("../keys/id_rsa.openssh.pw", password = "test")
   expect_equal(sk1, sk2)
+  expect_equal(sk1, sk3)
+  expect_equal(sk1, sk4)
   expect_error(read_key("../keys/id_rsa.pw", password = ""), "bad")
 })
 
 test_that("reading public key formats", {
   pk2 <- read_pubkey("../keys/id_rsa.pem")
   pk3 <- read_pubkey("../keys/id_rsa.pub")
-  pk4 <- read_pubkey("../keys/id_rsa.sshpem1")
+  pk4 <- read_pubkey("../keys/id_rsa.sshpub")
   pk5 <- read_pubkey("../keys/id_rsa.sshpem2")
   pk6 <- as.list(sk1)$pubkey
   expect_equal(pk1, pk2)

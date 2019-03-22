@@ -8,17 +8,23 @@ pk1 <- read_pubkey("../keys/id_ecdsa384.pub")
 
 test_that("reading protected keys", {
   sk2 <- read_key("../keys/id_ecdsa384.pw", password = "test")
+  sk3 <- read_key("../keys/id_ecdsa384.openssh")
+  sk4 <- read_key("../keys/id_ecdsa384.openssh.pw", password = "test")
   expect_equal(sk1, sk2)
+  expect_equal(sk1, sk3)
+  expect_equal(sk1, sk4)
   expect_error(read_key("../keys/id_ecdsa384.pw", password = NULL), "bad")
 })
 
 test_that("reading public key formats", {
   pk2 <- read_pubkey("../keys/id_ecdsa384.pem")
   pk3 <- read_pubkey("../keys/id_ecdsa384.pub")
-  pk4 <- as.list(sk1)$pubkey
+  pk4 <- read_pubkey("../keys/id_ecdsa384.sshpub")
+  pk5 <- as.list(sk1)$pubkey
   expect_equal(pk1, pk2)
   expect_equal(pk1, pk3)
   expect_equal(pk1, pk4)
+  expect_equal(pk1, pk5)
 })
 
 test_that("pubkey ssh fingerprint", {
