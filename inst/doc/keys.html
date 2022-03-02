@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2021-12-18" />
+<meta name="date" content="2022-03-02" />
 
 <title>Importing and exporting RSA/DSA/EC keys</title>
 
@@ -255,6 +255,7 @@ if (window.hljs) {
 
 
 
+
 <style type="text/css">
 .main-container {
   max-width: 940px;
@@ -359,7 +360,7 @@ pre code {
 
 
 <h1 class="title toc-ignore">Importing and exporting RSA/DSA/EC keys</h1>
-<h4 class="date">2021-12-18</h4>
+<h4 class="date">2022-03-02</h4>
 
 </div>
 
@@ -386,13 +387,14 @@ pubkey &lt;- key$pubkey
 bin &lt;- write_der(pubkey)
 print(bin)</code></pre>
 <pre><code> [1] 30 59 30 13 06 07 2a 86 48 ce 3d 02 01 06 08 2a 86 48 ce 3d 03 01 07 03 42
-[26] 00 04 da 61 31 1b 82 4b b0 6c dc 26 1a 01 ac ed 52 9b 4f e4 4b bd ba 7c 54
-[51] 73 de d8 70 3a f7 6d 9d 65 a1 99 d3 49 c1 82 12 b8 64 87 c4 3e 93 43 4a 51
-[76] 99 e8 3d fa f4 90 7c 79 40 e2 61 4e 7a 1a 5e 12</code></pre>
+[26] 00 04 08 64 18 6e 4c f9 1e f0 ab 01 43 f0 42 fe 69 84 a5 3e 38 be f1 c7 d3
+[51] b8 ef e7 ed 41 46 4f c1 7b dd 56 ba 1f 7f 7d ed 30 94 fc ad b5 84 13 3f 58
+[76] 2d fd c0 0c d0 b0 64 65 84 d5 47 0a a4 8e 56 87</code></pre>
 <p>To read a DER key use <code>read_key</code> or <code>read_pubkey</code> with <code>der = TRUE</code>.</p>
 <pre class="r"><code>read_pubkey(bin, der = TRUE)</code></pre>
 <pre><code>[256-bit ecdsa public key]
-md5: 5f94a29c35d272497759e613daf69199</code></pre>
+md5: fa1c899bfb8eb7236547ce5b93cd5d70
+sha256: e9386d6b758868e516bb9d437b7e8fff8e724f074c088cbb23bb6ab0c605ca7f</code></pre>
 <p>Users typically don’t need to worry about the key’s underlying primes, but have a look at <code>key$data</code> if you are curious.</p>
 </div>
 <div id="the-pem-format" class="section level3">
@@ -400,23 +402,23 @@ md5: 5f94a29c35d272497759e613daf69199</code></pre>
 <p>In practice the user rarely encounters DER because it is mainly for internal use. When humans exchange keys and certificates they typically use the PEM format. PEM is simply <strong>base64 encoded DER data, plus a header</strong>. The header identifies the key (and possibly encryption) type.</p>
 <pre class="r"><code>cat(write_pem(pubkey))</code></pre>
 <pre><code>-----BEGIN PUBLIC KEY-----
-MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE2mExG4JLsGzcJhoBrO1Sm0/kS726
-fFRz3thwOvdtnWWhmdNJwYISuGSHxD6TQ0pRmeg9+vSQfHlA4mFOehpeEg==
+MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAECGQYbkz5HvCrAUPwQv5phKU+OL7x
+x9O47+ftQUZPwXvdVroff33tMJT8rbWEEz9YLf3ADNCwZGWE1UcKpI5Whw==
 -----END PUBLIC KEY-----</code></pre>
 <pre class="r"><code>cat(write_pem(key, password = NULL))</code></pre>
 <pre><code>-----BEGIN PRIVATE KEY-----
-MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgCyO7cBFZNDF7K4br
-6/U0ttLLPr6OYhNq/vAizt1gW8ahRANCAATaYTEbgkuwbNwmGgGs7VKbT+RLvbp8
-VHPe2HA6922dZaGZ00nBghK4ZIfEPpNDSlGZ6D369JB8eUDiYU56Gl4S
+MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgyx81CsKzWkFtCwFn
+1nYFXr0kVgy5wv+M5at+l3KMrjmhRANCAAQIZBhuTPke8KsBQ/BC/mmEpT44vvHH
+07jv5+1BRk/Be91Wuh9/fe0wlPyttYQTP1gt/cAM0LBkZYTVRwqkjlaH
 -----END PRIVATE KEY-----</code></pre>
 <p>The PEM format allows for protecting private keys with a password. R will prompt you for the password when reading such a protected key.</p>
 <pre class="r"><code>cat(write_pem(key, password = &quot;supersecret&quot;))</code></pre>
 <pre><code>-----BEGIN ENCRYPTED PRIVATE KEY-----
-MIHjME4GCSqGSIb3DQEFDTBBMCkGCSqGSIb3DQEFDDAcBAhWbzyJTPORewICCAAw
-DAYIKoZIhvcNAgkFADAUBggqhkiG9w0DBwQIW9hmnxd18eMEgZANDMWmhSd/XusS
-gZNy0ExQFG6drCIOZ/MA9ifXp+88/z2HT3pshfpkyaSdf7zGSJmsjNEkE0ZDnUId
-+dj2tCKopOiCSNd7x9tQh7pbaZzc0HR+XqyZgz2TGl8/esFRh2cvQwwn5UGp7cLK
-m8H5iaTCG+m+mJogd3M1ZqQEjCWAmwSqw1BMAe7ry4FhBv0VwHQ=
+MIHjME4GCSqGSIb3DQEFDTBBMCkGCSqGSIb3DQEFDDAcBAi1Zm8z92c+HgICCAAw
+DAYIKoZIhvcNAgkFADAUBggqhkiG9w0DBwQINHQTbIIjr9sEgZAwYJLoy575Gaiq
+0SNGAVaI3XnNVQL/scMVMzgTCeg8vWLIiNDQzWlvdFrvxd3TVnAigfkMgw6r8ALJ
+GA1BtduERGnhGFX+fhrUcvt5purYDCS+gZ2w/mrjx65nQ8V0QpiPYs9+fKbdLVU6
+DjWwN2ZpUYoq2qL02GQMPLNfxbP4xig9gC/E2oL/nY+LNLQJZpk=
 -----END ENCRYPTED PRIVATE KEY-----</code></pre>
 </div>
 <div id="the-openssh-format" class="section level3">
@@ -424,11 +426,12 @@ m8H5iaTCG+m+mJogd3M1ZqQEjCWAmwSqw1BMAe7ry4FhBv0VwHQ=
 <p>For better or worse, OpenSSH uses a custom format for <strong>public keys</strong>. The advantage of this format is that it fits on a single line which is nice for e.g. your <code>~/.ssh/known_hosts</code> file. There is no special format for private keys, OpenSSH uses PEM as well.</p>
 <pre class="r"><code>str &lt;- write_ssh(pubkey)
 print(str)</code></pre>
-<pre><code>[1] &quot;ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBNphMRuCS7Bs3CYaAaztUptP5Eu9unxUc97YcDr3bZ1loZnTScGCErhkh8Q+k0NKUZnoPfr0kHx5QOJhTnoaXhI=&quot;</code></pre>
+<pre><code>[1] &quot;ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBAhkGG5M+R7wqwFD8EL+aYSlPji+8cfTuO/n7UFGT8F73Va6H3997TCU/K21hBM/WC39wAzQsGRlhNVHCqSOVoc=&quot;</code></pre>
 <p>The <code>read_pubkey</code> function will automatically detect if a file contains a <code>PEM</code> or <code>SSH</code> key.</p>
 <pre class="r"><code>read_pubkey(str)</code></pre>
 <pre><code>[256-bit ecdsa public key]
-md5: 5f94a29c35d272497759e613daf69199</code></pre>
+md5: fa1c899bfb8eb7236547ce5b93cd5d70
+sha256: e9386d6b758868e516bb9d437b7e8fff8e724f074c088cbb23bb6ab0c605ca7f</code></pre>
 </div>
 <div id="the-json-web-key-jwk-format" class="section level3">
 <h3>The JSON Web Key (JWK) format</h3>
@@ -439,8 +442,8 @@ jsonlite::prettify(json)</code></pre>
 <pre><code>{
     &quot;kty&quot;: &quot;EC&quot;,
     &quot;crv&quot;: &quot;P-256&quot;,
-    &quot;x&quot;: &quot;2mExG4JLsGzcJhoBrO1Sm0_kS726fFRz3thwOvdtnWU&quot;,
-    &quot;y&quot;: &quot;oZnTScGCErhkh8Q-k0NKUZnoPfr0kHx5QOJhTnoaXhI&quot;
+    &quot;x&quot;: &quot;CGQYbkz5HvCrAUPwQv5phKU-OL7xx9O47-ftQUZPwXs&quot;,
+    &quot;y&quot;: &quot;3Va6H3997TCU_K21hBM_WC39wAzQsGRlhNVHCqSOVoc&quot;
 }
  </code></pre>
 <p>Keys from <code>jose</code> and <code>openssl</code> are the same.</p>
@@ -449,7 +452,8 @@ identical(mykey, pubkey)</code></pre>
 <pre><code>[1] TRUE</code></pre>
 <pre class="r"><code>print(mykey)</code></pre>
 <pre><code>[256-bit ecdsa public key]
-md5: 5f94a29c35d272497759e613daf69199</code></pre>
+md5: fa1c899bfb8eb7236547ce5b93cd5d70
+sha256: e9386d6b758868e516bb9d437b7e8fff8e724f074c088cbb23bb6ab0c605ca7f</code></pre>
 </div>
 
 
