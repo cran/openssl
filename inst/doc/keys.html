@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2022-09-13" />
+<meta name="date" content="2022-10-17" />
 
 <title>Importing and exporting RSA/DSA/EC keys</title>
 
@@ -357,7 +357,7 @@ display: none;
 
 <h1 class="title toc-ignore">Importing and exporting RSA/DSA/EC
 keys</h1>
-<h4 class="date">2022-09-13</h4>
+<h4 class="date">2022-10-17</h4>
 
 </div>
 
@@ -399,15 +399,15 @@ pubkey &lt;- key$pubkey
 bin &lt;- write_der(pubkey)
 print(bin)</code></pre>
 <pre><code> [1] 30 59 30 13 06 07 2a 86 48 ce 3d 02 01 06 08 2a 86 48 ce 3d 03 01 07 03 42
-[26] 00 04 c0 46 dd 11 9c 32 87 85 fe 10 98 02 8e fd 39 92 6e 31 98 0d a7 b0 f7
-[51] 5d bb 05 9b b4 45 6d e5 93 95 2d 43 48 71 40 d3 c1 9f 15 1d 36 ec 25 25 2b
-[76] 32 5a cc ea d5 bf 3f f8 5d 0d d5 e1 a9 72 34 fc</code></pre>
+[26] 00 04 06 2b 4d f2 7d ac af 06 56 66 01 01 1d 84 e9 f7 4b 23 39 12 43 a4 2f
+[51] 19 65 f8 09 35 b6 cb 46 99 6c 18 89 d1 91 55 6b c4 88 2a b3 f7 24 09 e3 a6
+[76] cd 43 9f 7d cf 48 7e 88 7a fa 61 46 89 7b d3 13</code></pre>
 <p>To read a DER key use <code>read_key</code> or
 <code>read_pubkey</code> with <code>der = TRUE</code>.</p>
 <pre class="r"><code>read_pubkey(bin, der = TRUE)</code></pre>
 <pre><code>[256-bit ecdsa public key]
-md5: ef8398a9f41fa0ef9f98aebac1fccd75
-sha256: e3022927bc0ca0237a887fe39faa9839003e8028b5fb40568811ed83038764bf</code></pre>
+md5: 9179758f5580c621e680de424bcd679e
+sha256: 28a20597aecf9c7832aa53b24bd672c73792e335e83804ff82b22a3a6980691c</code></pre>
 <p>Users typically don’t need to worry about the key’s underlying
 primes, but have a look at <code>key$data</code> if you are curious.</p>
 </div>
@@ -420,24 +420,24 @@ a header</strong>. The header identifies the key (and possibly
 encryption) type.</p>
 <pre class="r"><code>cat(write_pem(pubkey))</code></pre>
 <pre><code>-----BEGIN PUBLIC KEY-----
-MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEwEbdEZwyh4X+EJgCjv05km4xmA2n
-sPdduwWbtEVt5ZOVLUNIcUDTwZ8VHTbsJSUrMlrM6tW/P/hdDdXhqXI0/A==
+MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEBitN8n2srwZWZgEBHYTp90sjORJD
+pC8ZZfgJNbbLRplsGInRkVVrxIgqs/ckCeOmzUOffc9Ifoh6+mFGiXvTEw==
 -----END PUBLIC KEY-----</code></pre>
 <pre class="r"><code>cat(write_pem(key, password = NULL))</code></pre>
 <pre><code>-----BEGIN PRIVATE KEY-----
-MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgjykZGvNUkYBaIHLM
-N/GxV5e30WAVDvEswBBOOEPo9RyhRANCAATARt0RnDKHhf4QmAKO/TmSbjGYDaew
-9127BZu0RW3lk5UtQ0hxQNPBnxUdNuwlJSsyWszq1b8/+F0N1eGpcjT8
+MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgvc0fpo+BuKLfGxt6
+GiuzBpJ4/mXkgWKOpCrPOCqEMI+hRANCAAQGK03yfayvBlZmAQEdhOn3SyM5EkOk
+Lxll+Ak1tstGmWwYidGRVWvEiCqz9yQJ46bNQ599z0h+iHr6YUaJe9MT
 -----END PRIVATE KEY-----</code></pre>
 <p>The PEM format allows for protecting private keys with a password. R
 will prompt you for the password when reading such a protected key.</p>
 <pre class="r"><code>cat(write_pem(key, password = &quot;supersecret&quot;))</code></pre>
 <pre><code>-----BEGIN ENCRYPTED PRIVATE KEY-----
-MIHjME4GCSqGSIb3DQEFDTBBMCkGCSqGSIb3DQEFDDAcBAhvC+2pUBLLfAICCAAw
-DAYIKoZIhvcNAgkFADAUBggqhkiG9w0DBwQIeowdVXvQApIEgZBAHB4xK0AZbwcs
-n6HotBf2PZiHNGN1EkfnOzm6mgjKQaxzYnYrYR88fU6rnGJxCh+lSKgX9av8hbhe
-TFmQ4/cHW66MGXc5kIhrbqzn6FGhgcOmS3awwLiVMzZfEeeVp4PgA34gAuKc+s11
-E1dJQT6z5P4X07ERtm0bza4s+E7Jv9lXBgqy1JNuOeP/KLCYFSQ=
+MIHjME4GCSqGSIb3DQEFDTBBMCkGCSqGSIb3DQEFDDAcBAgKPy8pOJ5jyQICCAAw
+DAYIKoZIhvcNAgkFADAUBggqhkiG9w0DBwQIrwBFvQnsSP4EgZAZS/j3FVfxdpn3
+W4kwTB/TnHTJ1RHhZJ5My1Cs8y6pQ0kNOlKkfg2dz8MDrKNy5pBJ+CX2rnj1Qt0j
+kxgSzN5+B05W4WvK4Q55QqAoLZxnE+6imXQuA4i8/cNQIZ/BwOMylbuG7Q5a5Hjt
+9/0cFX6OKnzY+yXpBFHCfTh32e6ESUJSwT+ki7jET2ezW8/RHBo=
 -----END ENCRYPTED PRIVATE KEY-----</code></pre>
 </div>
 <div id="the-openssh-format" class="section level3">
@@ -449,13 +449,13 @@ There is no special format for private keys, OpenSSH uses PEM as
 well.</p>
 <pre class="r"><code>str &lt;- write_ssh(pubkey)
 print(str)</code></pre>
-<pre><code>[1] &quot;ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBMBG3RGcMoeF/hCYAo79OZJuMZgNp7D3XbsFm7RFbeWTlS1DSHFA08GfFR027CUlKzJazOrVvz/4XQ3V4alyNPw=&quot;</code></pre>
+<pre><code>[1] &quot;ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBAYrTfJ9rK8GVmYBAR2E6fdLIzkSQ6QvGWX4CTW2y0aZbBiJ0ZFVa8SIKrP3JAnjps1Dn33PSH6IevphRol70xM=&quot;</code></pre>
 <p>The <code>read_pubkey</code> function will automatically detect if a
 file contains a <code>PEM</code> or <code>SSH</code> key.</p>
 <pre class="r"><code>read_pubkey(str)</code></pre>
 <pre><code>[256-bit ecdsa public key]
-md5: ef8398a9f41fa0ef9f98aebac1fccd75
-sha256: e3022927bc0ca0237a887fe39faa9839003e8028b5fb40568811ed83038764bf</code></pre>
+md5: 9179758f5580c621e680de424bcd679e
+sha256: 28a20597aecf9c7832aa53b24bd672c73792e335e83804ff82b22a3a6980691c</code></pre>
 </div>
 <div id="the-json-web-key-jwk-format" class="section level3">
 <h3>The JSON Web Key (JWK) format</h3>
@@ -470,8 +470,8 @@ jsonlite::prettify(json)</code></pre>
 <pre><code>{
     &quot;kty&quot;: &quot;EC&quot;,
     &quot;crv&quot;: &quot;P-256&quot;,
-    &quot;x&quot;: &quot;wEbdEZwyh4X-EJgCjv05km4xmA2nsPdduwWbtEVt5ZM&quot;,
-    &quot;y&quot;: &quot;lS1DSHFA08GfFR027CUlKzJazOrVvz_4XQ3V4alyNPw&quot;
+    &quot;x&quot;: &quot;BitN8n2srwZWZgEBHYTp90sjORJDpC8ZZfgJNbbLRpk&quot;,
+    &quot;y&quot;: &quot;bBiJ0ZFVa8SIKrP3JAnjps1Dn33PSH6IevphRol70xM&quot;
 }
  </code></pre>
 <p>Keys from <code>jose</code> and <code>openssl</code> are the
@@ -481,8 +481,8 @@ identical(mykey, pubkey)</code></pre>
 <pre><code>[1] TRUE</code></pre>
 <pre class="r"><code>print(mykey)</code></pre>
 <pre><code>[256-bit ecdsa public key]
-md5: ef8398a9f41fa0ef9f98aebac1fccd75
-sha256: e3022927bc0ca0237a887fe39faa9839003e8028b5fb40568811ed83038764bf</code></pre>
+md5: 9179758f5580c621e680de424bcd679e
+sha256: 28a20597aecf9c7832aa53b24bd672c73792e335e83804ff82b22a3a6980691c</code></pre>
 </div>
 
 
