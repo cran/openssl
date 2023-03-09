@@ -1,3 +1,7 @@
+2.0.6
+ - Add new functions pkcs7_encrypt and pkcs7_decrypt
+ - Fix snprintf bug in hash functions
+
 2.0.5
  - Replace sprintf with snprintf for CRAN
 
