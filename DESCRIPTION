@@ -2,7 +2,7 @@ Package: openssl
 Type: Package
 Title: Toolkit for Encryption, Signatures and Certificates Based on
         OpenSSL
-Version: 2.0.6
+Version: 2.1.0
 Authors@R: c(person("Jeroen", "Ooms", role = c("aut", "cre"), email = "jeroen@berkeley.edu",
     comment = c(ORCID = "0000-0002-4035-0289")),
     person("Oliver", "Keyes", role = "ctb"))
@@ -16,7 +16,7 @@ Description: Bindings to OpenSSL libssl and libcrypto, plus custom SSH key parse
     number generator, and 'bignum' math methods for manually performing crypto 
     calculations on large multibyte integers.
 License: MIT + file LICENSE
-URL: https://github.com/jeroen/openssl
+URL: https://jeroen.r-universe.dev/openssl
 BugReports: https://github.com/jeroen/openssl/issues
 SystemRequirements: OpenSSL >= 1.0.2
 VignetteBuilder: knitr
@@ -26,9 +26,9 @@ Suggests: curl, testthat (>= 2.1.0), digest, knitr, rmarkdown,
 RoxygenNote: 7.2.3
 Encoding: UTF-8
 NeedsCompilation: yes
-Packaged: 2023-03-09 22:32:32 UTC; jeroen
+Packaged: 2023-07-15 16:46:31 UTC; jeroen
 Author: Jeroen Ooms [aut, cre] (<https://orcid.org/0000-0002-4035-0289>),
   Oliver Keyes [ctb]
 Maintainer: Jeroen Ooms <jeroen@berkeley.edu>
 Repository: CRAN
-Date/Publication: 2023-03-09 23:10:02 UTC
+Date/Publication: 2023-07-15 19:50:02 UTC
