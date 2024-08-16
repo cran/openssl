@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2024-05-16" />
+<meta name="date" content="2024-08-16" />
 
 <title>Cryptographic Hashing in R</title>
 
@@ -350,14 +350,14 @@ display: none;
 
 
 <h1 class="title toc-ignore">Cryptographic Hashing in R</h1>
-<h4 class="date">2024-05-16</h4>
+<h4 class="date">2024-08-16</h4>
 
 </div>
 
 
 <p>The functions <code>sha1</code>, <code>sha256</code>,
 <code>sha512</code>, <code>md4</code>, <code>md5</code> and
-<code>ripemd160</code> bind to the respective <a href="https://www.openssl.org/docs/man1.1.1/man1/openssl-dgst.html">digest
+<code>ripemd160</code> bind to the respective <a href="https://docs.openssl.org/1.1.1/man1/openssl-dgst/">digest
 functions</a> in OpenSSL’s libcrypto. Both binary and string inputs are
 supported and the output type will match the input type.</p>
 <pre class="r"><code>md5(&quot;foo&quot;)</code></pre>
@@ -400,9 +400,9 @@ Attaching package: &#39;digest&#39;</code></pre>
 <pre><code>[1] &quot;acbd18db4cc2f85cedef654fccc4a4d8&quot;</code></pre>
 <pre class="r"><code># Other way around
 digest(cars, skip = 0)</code></pre>
-<pre><code>[1] &quot;ee2d61e371223b79b86b049b903ad69f&quot;</code></pre>
+<pre><code>[1] &quot;a74ce6c10413c19dc0ce4c131afec221&quot;</code></pre>
 <pre class="r"><code>md5(serialize(cars, NULL))</code></pre>
-<pre><code>md5 39:73:f6:da:a4:bb:6f:ce:d2:db:46:c6:fc:81:0f:f1 </code></pre>
+<pre><code>md5 3d:bb:47:09:04:79:07:c6:71:76:16:8f:3e:d0:11:e1 </code></pre>
 </div>
 
 

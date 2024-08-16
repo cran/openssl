@@ -1,7 +1,10 @@
+2.2.1
+ - Skip some legacy sha1 tests on Redhat systems to fix #125
+
 2.2.0
  - Use new EVP_MD_fetch() api on libssl 3 to find non-default algorithms.
  - Add keccak() hash function
- - Windows: update to OpenSSL 3.3.0
+ - MacOS/Windows: update to OpenSSL 3.3.0
 
 2.1.2
  - MacOS: avoid linking against legacy versions of openssl
