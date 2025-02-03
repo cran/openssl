@@ -1,7 +1,7 @@
-3e9f4c762c0d58b4fb8363c0a3fa1e83 *DESCRIPTION
+6dd5f67783cbc05ce30e7da1bd03f073 *DESCRIPTION
 5acd18f82cf3f814c4455a6f785249f2 *LICENSE
 542f46632de9020ef48a312dceb375d1 *NAMESPACE
-461c65f2006b08801b324d9912efbb33 *NEWS
+595c5aeacc96c13c7c1a1149cea8cc88 *NEWS
 20afc683e7878f000cfc863b531872e7 *R/aes.R
 86c2f782ce3e423fbeb62dec6c6f760e *R/askpass.R
 b2cbc7dabe3c2c601336632cfbc9b7a0 *R/base.R
@@ -40,16 +40,16 @@ d41d8cd98f00b204e9800998ecf8427e *configure.win
 f4a13fcdd32ca18c3e62c7a728ebb378 *inst/cacert.pem
 677836262ec13d90fd6b2721d701508b *inst/doc/bignum.R
 6c2533ea075c226a5ad8b86595e2977a *inst/doc/bignum.Rmd
-b96ffddb637f342be9129aa015e3450e *inst/doc/bignum.html
+bb9345f0e1dcd7baaa8b18d08ba8c460 *inst/doc/bignum.html
 40edffbf74c562b619402355376000db *inst/doc/crypto_hashing.R
 ee233ca052df5c3f4280919315ceb810 *inst/doc/crypto_hashing.Rmd
-9cf2b9ff474677d91c524cf1e5927dec *inst/doc/crypto_hashing.html
+36c0a8e0e4d8937b1bfea0451aa8339a *inst/doc/crypto_hashing.html
 283593a47a4fe6d0e2980d57f15d467c *inst/doc/keys.R
 84e4760fec6195d3851b4dc45f7857e6 *inst/doc/keys.Rmd
-8c636600acd78057013660948b80d861 *inst/doc/keys.html
+97980e6e7da8b8a0d00d4248ae2f8abc *inst/doc/keys.html
 e095972ef8152baa32295e06f8ba348b *inst/doc/secure_rng.R
 54afe37438cb7bca560f4f33bef9b1b0 *inst/doc/secure_rng.Rmd
-6e341a9b36495f96caef6fc11f9655bd *inst/doc/secure_rng.html
+5414adebc0b19cf55da6759db150ce34 *inst/doc/secure_rng.html
 caa2a79c5ebd3988b9b2807069137cf7 *man/aes_cbc.Rd
 f4ea38f39d1aad5b038633a28303454d *man/base64_encode.Rd
 a4cb033c86e0129811687f08584597b8 *man/bignum.Rd
@@ -74,7 +74,7 @@ c5f97e3aace1d717ba420154dbf36b38 *man/signatures.Rd
 a38546fb2726f7b97fe34b4ed82ab70f *man/ssl_ctx.Rd
 e9480b29e97c566460b173b56e35c0e2 *man/write_pem.Rd
 2a5240f6c8193f9231aea225934dc20c *src/Makevars.in
-04ffe8bbd2a13abdb18f496746188d8c *src/Makevars.win
+5ff90f7263e98d0f4dc4baccae882997 *src/Makevars.win
 7aa7a8c98774e1330f9b43ab994a8dc5 *src/aes.c
 080fee4d253099e6e3c1cac949abd8dc *src/base64.c
 7cacb1f31e3cdc89ebaf18acc78c10bc *src/bcrypt/bcrypt_pbkdf.c
@@ -91,7 +91,7 @@ a003194bc4614a36b0edcbd8b2f140a9 *src/envelope.c
 5e25af525879a11ac27fc0733db3fad0 *src/info.c
 4e2d8b9539c3f57c437d483a0bd457e0 *src/keygen.c
 a19ea9882930a973c44f10c47f8d4bc9 *src/keys.c
-58068f1f0289fde8e75837185c07fa5b *src/onload.c
+671876bdc8b49c332f287a058bdc3230 *src/onload.c
 e22ed38c45fa38998406565d599501e4 *src/openssh.c
 200a0e7634b46d1705d6fdd9c6eab207 *src/password.c
 b58fafbc1cc78898c8cb73cb00e71ab3 *src/pbkdf.c
@@ -219,7 +219,7 @@ f7373138be85ee6413c3ee0bcff274c5 *tests/testthat/test_salting.R
 5a13c4328b13a83a2d1203768248aceb *tests/testthat/test_sodium.R
 f0d7148d6fea49b69901b53b1ce05c5b *tests/testthat/test_ssl_ctx.R
 0ec27c181a66ce5b72bc8c3940e9e00e *tools/version.c
-3312b55fb065fb51ae0ce31fb794054c *tools/winlibs.R
+fb2822c0efa0a9d48e5d5cf204432339 *tools/winlibs.R
 6c2533ea075c226a5ad8b86595e2977a *vignettes/bignum.Rmd
 ee233ca052df5c3f4280919315ceb810 *vignettes/crypto_hashing.Rmd
 84e4760fec6195d3851b4dc45f7857e6 *vignettes/keys.Rmd
